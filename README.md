@@ -1,3 +1,2 @@
-# Coldairarrow.Fx.Net.EasyuiWeb
-快速开发框架
-使用Easyui作为实现方式
+# Coldairarrow.Fx.Net.Easyui.GitHub
+Web后台快速开发框架,.NET452版本
