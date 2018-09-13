@@ -6,7 +6,11 @@
     Layout = "~/Views/Shared/_Layout_List.cshtml";
 
     var obj = (Base_User)Model;
-    string roleIdList = Base_UserBusiness.GetUserRoleIds(obj.UserId).ToJson().Replace("\"", "'");
+    string roleIdList ="[]";
+    if (!obj.Id.IsNullOrEmpty())
+    {
+        roleIdList = Base_UserBusiness.GetUserRoleIds(obj.UserId).ToJson().Replace("\"", "'");
+    }
     string str = obj.ToJson();
     var objStr = Html.Raw(obj.ToJson());
 }
