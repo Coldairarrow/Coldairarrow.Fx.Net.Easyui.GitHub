@@ -5,7 +5,6 @@
     Layout = "~/Views/Shared/_Layout_List.cshtml";
 
     var obj = (Base_SysRole)Model;
-    var objStr = Html.Raw(obj.ToJson());
 }
 
 <form id="dataForm" enctype="multipart/form-data" class="easyui-form" method="post" data-options="novalidate:true">
@@ -28,9 +27,9 @@
     <a id="saveForm" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存</a>
 }
 
-<script>
+    <script>
     var rootUrl = '@Url.Content("~/")';
-    var theEntity = JSON.parse('@objStr');
+    var theEntity = @Html.Raw(obj.ToJson());
 
     $(function () {
         $('#saveForm').click(function () {
@@ -51,4 +50,4 @@
             });
         });
     });
-</script>
+    </script>
