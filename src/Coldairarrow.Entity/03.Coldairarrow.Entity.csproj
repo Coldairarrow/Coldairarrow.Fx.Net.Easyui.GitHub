@@ -67,6 +67,8 @@
     <Compile Include="Base_SysManage\Base_User.cs" />
     <Compile Include="Base_SysManage\Base_UserRoleMap.cs" />
     <Compile Include="Base_SysManage\EnumType.cs" />
+    <Compile Include="DevManage\Dev_Project.cs" />
+    <Compile Include="DevManage\Dev_ProjectType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
