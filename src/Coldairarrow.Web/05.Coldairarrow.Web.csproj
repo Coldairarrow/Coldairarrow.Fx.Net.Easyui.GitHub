@@ -590,6 +590,12 @@
     <Content Include="Skin\reference\sprite-mixins.css" />
     <Content Include="Skin\reference\variables.css" />
     <Content Include="Skin\ue_templates.css" />
+    <Content Include="Upload\Img\2018-09-07\abd2ae39-877b-4ca4-b25a-58fdb3bf3771.jpg" />
+    <Content Include="Upload\Img\2018-09-07\bb4ff1c0-4d4e-4a64-b0f8-ea050bc99292.jpg" />
+    <Content Include="Upload\Img\2018-09-07\cba0b5a7-d27c-4a88-b2c2-297272b492fd.jpg" />
+    <Content Include="Upload\Img\2018-09-07\e13ab0ec-9603-4ac2-8a27-8c8e386865b0.jpg" />
+    <Content Include="Upload\Img\2018-09-18\2f13dbdf-3b50-4a67-9f9e-7555603e2c94.jpeg" />
+    <Content Include="Upload\Img\_.txt" />
     <Content Include="Upload\_.txt" />
     <Content Include="Web.config" />
     <Content Include="Skin\compass.watch.cmd" />
