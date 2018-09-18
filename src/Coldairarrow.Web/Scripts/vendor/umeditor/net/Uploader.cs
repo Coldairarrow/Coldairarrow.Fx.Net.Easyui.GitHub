@@ -59,7 +59,7 @@ namespace Baidu
                     URL = _webRootUrl + pathbase + filename;
                 }
             }
-            catch (Exception e)
+            catch
             {
                 state = "未知错误";
                 URL = "";
@@ -92,7 +92,7 @@ namespace Baidu
 
                 URL = pathbase + filename;
             }
-            catch (Exception e)
+            catch
             {
                 state = "未知错误";
                 URL = "";
