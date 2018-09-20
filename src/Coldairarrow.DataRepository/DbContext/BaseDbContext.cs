@@ -73,6 +73,35 @@ namespace Coldairarrow.DataRepository
 
         #region 私有成员
 
+        /// <summary>
+        /// 初始化DbContext
+        /// </summary>
+        /// <param name="modelBuilder">模型建造者</param>
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            //modelBuilder.Entity<TheEntity>();
+            //以下代码最终目的就是将所有需要的实体类调用上面的方法加入到DbContext中，成为其中的一部分
+            var entityMethod = typeof(DbModelBuilder).GetMethod("Entity");
+            _modelTypes.ToList().ForEach(aModel =>
+            {
+                entityMethod.MakeGenericMethod(aModel).Invoke(modelBuilder, null);
+            });
+        }
+        /// <summary>
+        /// 获取DbConnection
+        /// </summary>
+        /// <param name="conStr">连接名或字符串</param>
+        /// <returns></returns>
+        private static DbConnection GetDbConnection(string conStr, DatabaseType dbType)
+        {
+            if (conStr.IsNullOrEmpty())
+                conStr = GlobalSwitch.DefaultDbConName;
+            DbConnection dbConnection = DbProviderFactoryHelper.GetDbConnection(dbType);
+            dbConnection.ConnectionString = DbProviderFactoryHelper.GetConStr(conStr);
+
+            return dbConnection;
+        }
+
         private static void InitModelType()
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -105,34 +134,6 @@ namespace Coldairarrow.DataRepository
             _modelTypes.Add(type);
             _modelTypeMap[GetIdentity(type)] = type;
             EntityModelCacheKey.ChangeCache();
-        }
-        /// <summary>
-        /// 初始化DbContext
-        /// </summary>
-        /// <param name="modelBuilder">模型建造者</param>
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            //modelBuilder.Entity<TheEntity>();
-            //以下代码最终目的就是将所有需要的实体类调用上面的方法加入到DbContext中，成为其中的一部分
-            var entityMethod = typeof(DbModelBuilder).GetMethod("Entity");
-            _modelTypes.ToList().ForEach(aModel =>
-            {
-                entityMethod.MakeGenericMethod(aModel).Invoke(modelBuilder, null);
-            });
-        }
-        /// <summary>
-        /// 获取DbConnection
-        /// </summary>
-        /// <param name="conStr">连接名或字符串</param>
-        /// <returns></returns>
-        private static DbConnection GetDbConnection(string conStr, DatabaseType dbType)
-        {
-            if (conStr.IsNullOrEmpty())
-                conStr = GlobalSwitch.DefaultDbConName;
-            DbConnection dbConnection = DbProviderFactoryHelper.GetDbConnection(dbType);
-            dbConnection.ConnectionString = DbProviderFactoryHelper.GetConStr(conStr);
-
-            return dbConnection;
         }
         private static string GetIdentity(Type type)
         {
