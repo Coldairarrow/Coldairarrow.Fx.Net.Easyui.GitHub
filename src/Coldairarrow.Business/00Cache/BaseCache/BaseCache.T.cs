@@ -1,5 +1,6 @@
 ﻿using Coldairarrow.Util;
 using System;
+using System.Collections.Generic;
 
 namespace Coldairarrow.Business.Cache
 {
@@ -55,6 +56,10 @@ namespace Coldairarrow.Business.Cache
         public void UpdateCache(string idKey)
         {
             CacheHelper.Cache.RemoveCache(BuildKey(idKey));
+        }
+        public void UpdateCache(List<string> idKeys)
+        {
+            idKeys.ForEach(x => UpdateCache(x));
         }
 
         #endregion

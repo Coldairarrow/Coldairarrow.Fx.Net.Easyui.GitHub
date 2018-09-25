@@ -74,6 +74,7 @@ namespace Coldairarrow.Business.Base_SysManage
                 throw new Exception("禁止更改超级管理员！");
 
             Update(theData);
+            _cache.UpdateCache(theData.UserId);
         }
 
         public void SetUserRole(string userId, List<string> roleIds)
@@ -99,8 +100,10 @@ namespace Coldairarrow.Business.Base_SysManage
             var adminUser = GetTheUser("Admin");
             if (ids.Contains(adminUser.Id))
                 throw new Exception("超级管理员是内置账号,禁止删除！");
+            var userIds = GetIQueryable().Where(x => ids.Contains(x.UserId)).Select(x => x.UserId).ToList();
 
             Delete(ids);
+            _cache.UpdateCache(userIds);
         }
 
         /// <summary>
