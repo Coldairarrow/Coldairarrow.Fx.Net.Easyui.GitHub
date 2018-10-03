@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq.Expressions;
 
 namespace Coldairarrow.DataRepository
 {
@@ -57,6 +58,11 @@ namespace Coldairarrow.DataRepository
         public override void BulkInsert<T>(List<T> entities)
         {
             throw new Exception("抱歉！暂不支持PostgreSql！");
+        }
+
+        public override void Delete_Sql<T>(Expression<Func<T, bool>> condition)
+        {
+            Delete(condition);
         }
 
         #endregion

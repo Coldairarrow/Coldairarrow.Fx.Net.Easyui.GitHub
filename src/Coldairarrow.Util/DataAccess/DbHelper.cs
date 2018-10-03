@@ -58,7 +58,7 @@ namespace Coldairarrow.Util
         /// </summary>
         /// <param name="sql">Sql语句</param>
         /// <returns></returns>
-        public DataTable GetDataTableWithSql(string sql)
+        public virtual DataTable GetDataTableWithSql(string sql)
         {
             return GetDataTableWithSql(sql, null);
         }
@@ -69,7 +69,7 @@ namespace Coldairarrow.Util
         /// <param name="sql">Sql语句</param>
         /// <param name="parameters">参数</param>
         /// <returns></returns>
-        public DataTable GetDataTableWithSql(string sql, List<DbParameter> parameters)
+        public virtual DataTable GetDataTableWithSql(string sql, List<DbParameter> parameters)
         {
             DbProviderFactory dbProviderFactory = DbProviderFactoryHelper.GetDbProviderFactory(_dbType);
             using (DbConnection conn = dbProviderFactory.CreateConnection())
@@ -165,7 +165,7 @@ namespace Coldairarrow.Util
         /// </summary>
         /// <param name="schemaName">模式（架构）</param>
         /// <returns></returns>
-        public abstract List<DbTableInfo> GetDbAllTables(string schemaName = "dbo");
+        public abstract List<DbTableInfo> GetDbAllTables(string schemaName = null);
 
         /// <summary>
         /// 通过连接字符串和表名获取数据库表的信息

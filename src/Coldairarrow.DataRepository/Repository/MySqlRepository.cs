@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace Coldairarrow.DataRepository
@@ -111,6 +112,11 @@ namespace Coldairarrow.DataRepository
                 }
                 File.Delete(tmpPath);
             }
+        }
+
+        public override void Delete_Sql<T>(Expression<Func<T, bool>> condition)
+        {
+            Delete(condition);
         }
 
         #endregion

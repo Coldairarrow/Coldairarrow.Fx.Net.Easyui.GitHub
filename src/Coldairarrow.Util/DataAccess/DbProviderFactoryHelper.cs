@@ -1,6 +1,9 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using Npgsql;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Data.SqlClient;
 using System.Linq;
 
 namespace Coldairarrow.Util
@@ -37,7 +40,17 @@ namespace Coldairarrow.Util
         /// <returns></returns>
         public static DbProviderFactory GetDbProviderFactory(DatabaseType dbType)
         {
-            return DbProviderFactories.GetFactory(_invariantNames[dbType]);
+            DbProviderFactory factory = null;
+            switch (dbType)
+            {
+                case DatabaseType.SqlServer: factory = SqlClientFactory.Instance; break;
+                case DatabaseType.MySql: factory = MySqlClientFactory.Instance; break;
+                case DatabaseType.PostgreSql: factory = NpgsqlFactory.Instance; break;
+                case DatabaseType.Oracle: throw new Exception("暂不支持Oracle数据库");
+                default: throw new Exception("请传入有效的数据库！");
+            }
+
+            return factory;
         }
 
         /// <summary>

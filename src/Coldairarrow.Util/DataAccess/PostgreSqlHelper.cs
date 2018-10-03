@@ -64,7 +64,7 @@ using System.Net.NetworkInformation;
             { "varbit", typeof(BitArray) },
             { "hstore", typeof(IDictionary) },
             { "uuid", typeof(Guid) },
-            { "cidr", typeof(NpgsqlInet) },
+            { "cidr", typeof(string) },
             { "inet", typeof(IPAddress) },
             { "macaddr", typeof(PhysicalAddress) },
             { "tsquery", typeof(NpgsqlTsQuery) },
@@ -82,7 +82,7 @@ using System.Net.NetworkInformation;
             { "oidvector", typeof(uint[]) },
             { "name", typeof(string) },
             { "(internal) char", typeof(char) },
-            { "geometry (PostGIS)", typeof(PostgisGeometry) },
+            //{ "geometry (PostGIS)", typeof(PostgisGeometry) },
             { "record", typeof(object[]) },
             { "composite types", typeof(object) },
             { "range subtypes", typeof(object) },
@@ -99,17 +99,22 @@ using System.Net.NetworkInformation;
         /// </summary>
         /// <param name="schemaName">模式（架构）</param>
         /// <returns></returns>
-        public override List<DbTableInfo> GetDbAllTables(string schemaName="public")
+        public override List<DbTableInfo> GetDbAllTables(string schemaName = null)
         {
-            string sql = @"SELECT   tablename as ""TableName"",NULL as ""Description"" 
-FROM pg_tables
-WHERE SCHEMANAME = @schemaName
+            if (schemaName.IsNullOrEmpty())
+                schemaName = "public";
+            string sql = @"(select 
+	relname as ""TableName"",
+	cast(obj_description(relfilenode,'pg_class') as varchar) as ""Description""
+from pg_class c 
+where  relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' and relchecks=0
+order by relname)
 
-UNION all
+UNION ALL
 
-SELECT viewname as ""TableName"",NULL as ""Description""
+(SELECT viewname as ""TableName"",NULL as ""Description""
 FROM pg_views
-WHERE schemaname = @schemaName; ";
+WHERE schemaname = @schemaName)";
             return GetListBySql<DbTableInfo>(sql, new List<DbParameter> { new NpgsqlParameter("@schemaName", schemaName) });
         }
 

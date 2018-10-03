@@ -12,6 +12,7 @@ using System.Text;
 
 namespace Coldairarrow.DataRepository
 {
+    //[DbConfigurationType(typeof(MySql.Data.Entity.MySqlEFConfiguration))]
     public class BaseDbContext : DbContext
     {
         #region 构造函数
@@ -37,7 +38,7 @@ namespace Coldairarrow.DataRepository
         public BaseDbContext(string nameOrConStr, DatabaseType dbType, string entityNamespace)
             : base(GetDbConnection(nameOrConStr, dbType), true)
         {
-
+            _dbType = dbType;
         }
 
         #endregion
@@ -73,6 +74,8 @@ namespace Coldairarrow.DataRepository
 
         #region 私有成员
 
+        private DatabaseType _dbType { get; set; }
+
         /// <summary>
         /// 初始化DbContext
         /// </summary>
@@ -81,11 +84,22 @@ namespace Coldairarrow.DataRepository
         {
             //modelBuilder.Entity<TheEntity>();
             //以下代码最终目的就是将所有需要的实体类调用上面的方法加入到DbContext中，成为其中的一部分
+            modelBuilder.HasDefaultSchema(GetSchema());
             var entityMethod = typeof(DbModelBuilder).GetMethod("Entity");
             _modelTypes.ToList().ForEach(aModel =>
             {
                 entityMethod.MakeGenericMethod(aModel).Invoke(modelBuilder, null);
             });
+
+            string GetSchema()
+            {
+                switch (_dbType)
+                {
+                    case DatabaseType.SqlServer:return "dbo";
+                    case DatabaseType.MySql:case DatabaseType.PostgreSql: return "public";
+                    default:return "dbo";
+                }
+            }
         }
         /// <summary>
         /// 获取DbConnection
