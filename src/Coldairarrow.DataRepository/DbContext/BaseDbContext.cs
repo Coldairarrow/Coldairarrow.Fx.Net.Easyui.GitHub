@@ -12,7 +12,6 @@ using System.Text;
 
 namespace Coldairarrow.DataRepository
 {
-    //[DbConfigurationType(typeof(MySql.Data.Entity.MySqlEFConfiguration))]
     public class BaseDbContext : DbContext
     {
         #region 构造函数
@@ -95,9 +94,9 @@ namespace Coldairarrow.DataRepository
             {
                 switch (_dbType)
                 {
-                    case DatabaseType.SqlServer:return "dbo";
-                    case DatabaseType.MySql:case DatabaseType.PostgreSql: return "public";
-                    default:return "dbo";
+                    case DatabaseType.SqlServer: return "dbo";
+                    case DatabaseType.MySql: case DatabaseType.PostgreSql: return "public";
+                    default: return "dbo";
                 }
             }
         }
