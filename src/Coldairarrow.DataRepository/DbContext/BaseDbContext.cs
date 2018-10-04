@@ -96,6 +96,7 @@ namespace Coldairarrow.DataRepository
                 {
                     case DatabaseType.SqlServer: return "dbo";
                     case DatabaseType.MySql: case DatabaseType.PostgreSql: return "public";
+                    case DatabaseType.Oracle:return Database.Connection.Database;
                     default: return "dbo";
                 }
             }

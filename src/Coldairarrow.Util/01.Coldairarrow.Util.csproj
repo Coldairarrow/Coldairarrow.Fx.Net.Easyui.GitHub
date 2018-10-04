@@ -66,6 +66,12 @@
     <Reference Include="Npgsql, Version=4.0.3.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <HintPath>..\packages\Npgsql.4.0.3\lib\net451\Npgsql.dll</HintPath>
     </Reference>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.18.3, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Oracle.ManagedDataAccess.18.3.0\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.ManagedDataAccess.EntityFramework, Version=6.122.18.3, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Oracle.ManagedDataAccess.EntityFramework.18.3.0\lib\net45\Oracle.ManagedDataAccess.EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="StackExchange.Redis, Version=1.2.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\StackExchange.Redis.1.2.4\lib\net45\StackExchange.Redis.dll</HintPath>
     </Reference>
@@ -156,6 +162,7 @@
     <Compile Include="ClassLibrary\Wcf\WcfClient.cs" />
     <Compile Include="ClassLibrary\Wcf\WcfHelper.cs" />
     <Compile Include="ClassLibrary\Wcf\WcfHost.cs" />
+    <Compile Include="DataAccess\OracleHelper.cs" />
     <Compile Include="Extention\Extention.ActionExecutingContext.cs" />
     <Compile Include="Extention\Extention.Guid.cs" />
     <Compile Include="Extention\Extention.Type.cs" />

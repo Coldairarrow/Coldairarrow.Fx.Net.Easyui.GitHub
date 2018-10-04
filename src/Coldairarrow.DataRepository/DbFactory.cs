@@ -18,6 +18,7 @@ namespace Coldairarrow.DataRepository
             _dbrepositoryContainer.RegisterType<IRepository, SqlServerRepository>(DatabaseType.SqlServer.ToString());
             _dbrepositoryContainer.RegisterType<IRepository, MySqlRepository>(DatabaseType.MySql.ToString());
             _dbrepositoryContainer.RegisterType<IRepository, PostgreSqlRepository>(DatabaseType.PostgreSql.ToString());
+            _dbrepositoryContainer.RegisterType<IRepository, OracleRepository>(DatabaseType.Oracle.ToString());
         }
 
         #endregion

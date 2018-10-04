@@ -14,15 +14,9 @@ namespace Coldairarrow.Console1
     {
         static void Main(string[] args)
         {
-            List<string> nums = new List<string>() { "1", "2", "3" };
-
-            while (true)
-            {
-                Console.WriteLine( RandomHelper.Next(nums));
-                Thread.Sleep(1000);
-            }
-
-            Console.WriteLine("完成");
+            
+            var db = DbHelperFactory.GetDbHelper(DatabaseType.Oracle, "Data Source=127.0.0.1/ORCL;User ID=DB;Password=123456;Connect Timeout=3");
+            var tables = db.GetDbTableInfo("Base_User");
             Console.ReadLine();
         }
     }
