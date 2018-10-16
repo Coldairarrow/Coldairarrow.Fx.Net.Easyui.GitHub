@@ -415,10 +415,10 @@
 
 //使用文件base64下载文件
 (function () {
-    if (window.downloadFile)
+    if (window.downloadFileBase64)
         return;
 
-    window.downloadFile = function (base64, fileName) {
+    window.downloadFileBase64 = function (base64, fileName) {
         var blob = base64.toBlob();
         var reader = new FileReader();
         reader.readAsDataURL(blob);
@@ -432,5 +432,21 @@
             a.click();
             $(a).remove();
         }
+    };
+})();
+
+//使用文件Url下载文件
+(function () {
+    if (window.downloadFile)
+        return;
+
+    window.downloadFile = function (url) {
+        var a = document.createElement('a');
+        a.hidden = true;
+        a.download = '';
+        a.href = url
+        $("body").append(a);  // 修复firefox中无法触发click
+        a.click();
+        $(a).remove();
     };
 })();

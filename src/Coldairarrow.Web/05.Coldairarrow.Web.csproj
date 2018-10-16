@@ -628,6 +628,7 @@
     <Content Include="Skin\reference\sprite-mixins.css" />
     <Content Include="Skin\reference\variables.css" />
     <Content Include="Skin\ue_templates.css" />
+    <Content Include="Upload\FIle\_.txt" />
     <Content Include="Upload\Img\_.txt" />
     <Content Include="Upload\_.txt" />
     <Content Include="Web.config">
@@ -734,6 +735,8 @@
     <Content Include="Scripts\vendor\umeditor\third-party\mathquill\font\Symbola.ttf" />
     <Content Include="Scripts\vendor\umeditor\third-party\mathquill\font\Symbola.woff" />
     <Content Include="Views\Shared\_Layout_List_js.cshtml" />
+    <Content Include="Views\Demo\UploadFileIndex.cshtml" />
+    <Content Include="Views\Demo\UploadFileForm.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
