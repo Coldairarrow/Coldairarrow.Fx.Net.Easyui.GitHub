@@ -6,6 +6,7 @@
 <script type="text/javascript" charset="utf-8" src="~/Scripts/vendor/umeditor/umeditor.min.js"></script>
 <script type="text/javascript" src="~/Scripts/vendor/umeditor/lang/zh-cn/zh-cn.js"></script>
 <style type="text/css">
+
     h1 {
         font-family: "微软雅黑";
         font-weight: normal;
@@ -106,20 +107,25 @@
         }
 </style>
 <h1>请编写事迹</h1>
-
 <!--style给定宽度可以影响编辑器的最终宽度-->
 <script type="text/plain" id="myEditor" style="width:90%;height:60%;">
     <p></p>
 </script>
 @section foottoolbar{
     <a id="saveForm" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存</a>
-}
+    <a id="getContent" href="javascript:;" class="easyui-linkbutton">获取内容</a>
+    }
 <script type="text/javascript">
     //实例化编辑器
     var um = UM.getEditor('myEditor');
     $(function () {
         //原始内容
         um.setContent('');
+
+        $('#getContent').click(function () {
+            var content = um.getContent();
+            alert(content);
+        });
 
         //保存内容
         $('#saveForm').click(function () {
