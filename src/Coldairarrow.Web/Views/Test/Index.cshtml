@@ -2,34 +2,22 @@
     Layout = "~/Views/Shared/_Layout_List.cshtml";
 }
 
-<script src="~/Scripts/vendor/echarts/echarts.js"></script>
-<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-<div id="main" style="width: 800px;height:400px;"></div>
-<script type="text/javascript">
-    // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.getElementById('main'));
+<div id="product_images_wrapper"></div>
+<button id="upload">
+    上传
+</button>
+<script src="~/Scripts/vendor/exif/exif.min.js"></script>
+<script src="~/Scripts/vendor/html5Uploader/html5Uploader.js"></script>
+<script>
+    var productImageUploader = new Html5Uploader("#product_images_wrapper", {
+        maxHeight: 100,
+        maxWidth: 100,
+        uploadLimit: 2
+    });
     $(function () {
-        $.getJSON('/Test/GetChartData', {}, function (resJson) {
-            // 指定图表的配置项和数据
-            var option = {
-                xAxis: {
-                    type: 'category',
-                    boundaryGap: false,
-                    data: resJson.XData
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: [{
-                    data: resJson.YData,
-                    type: 'line',
-                    smooth: true,
-                    areaStyle: {}
-                }]
-            };
-            // 使用刚指定的配置项和数据显示图表。
-            myChart.setOption(option);
-
+        $('#upload').click(function () {
+            var images = productImageUploader.getUploadFiles();
+            console.log(images);
         });
     });
 </script>

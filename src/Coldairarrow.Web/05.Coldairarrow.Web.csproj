@@ -362,6 +362,7 @@
     <Content Include="Scripts\vendor\bootstrap\bootstrap.min.js" />
     <Content Include="Scripts\vendor\easy-validate\easy-validate.js" />
     <Content Include="Scripts\vendor\echarts\echarts.js" />
+    <Content Include="Scripts\vendor\exif\exif.min.js" />
     <Content Include="Scripts\vendor\highcharts\adapters\standalone-framework.js" />
     <Content Include="Scripts\vendor\highcharts\adapters\standalone-framework.src.js" />
     <Content Include="Scripts\vendor\highcharts\highcharts-3d.js" />
@@ -404,6 +405,8 @@
     <Content Include="Scripts\vendor\highcharts\themes\grid.js" />
     <Content Include="Scripts\vendor\highcharts\themes\sand-signika.js" />
     <Content Include="Scripts\vendor\highcharts\themes\skies.js" />
+    <Content Include="Scripts\vendor\html5Uploader\html5Uploader.js" />
+    <Content Include="Scripts\vendor\html5Uploader\html5Uploader.min.js" />
     <Content Include="Scripts\vendor\jquery\jquery-1.12.4.min.js" />
     <Content Include="Scripts\vendor\jquery\jquery-3.1.1.min.js" />
     <Content Include="Scripts\vendor\layui\css\layui.css" />
