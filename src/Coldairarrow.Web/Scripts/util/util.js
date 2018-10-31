@@ -450,3 +450,39 @@
         $(a).remove();
     };
 })();
+
+//拓展window的toDateString方法
+(function () {
+    if (window.toDateString)
+        return;
+
+    window.toDateString = function (date, fmt) {
+        if (date) {
+            return date.toDate().format(fmt);
+        } else {
+            return '';
+        }
+    };
+})();
+
+//拓展window的getType方法
+(function () {
+    if (window.getType)
+        return;
+
+    window.getType = function (obj) {
+        var type = typeof (obj);
+        if (type == 'object') {
+            type = Object.prototype.toString.call(obj);
+            if (type == '[object Array]') {
+                return 'array';
+            } else if (type == '[object Object]') {
+                return "object";
+            } else {
+                return 'param is no object type';
+            }
+        } else {
+            return type;
+        }
+    }
+})();

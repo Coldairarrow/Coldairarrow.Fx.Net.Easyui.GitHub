@@ -126,3 +126,29 @@ function init_yearMonth(id, value) {
         });
     }
 }
+
+//显示大图
+function showBigImg(url) {
+    top.dialogOpen({
+        id: 'ShowBigImg',
+        title: '添加数据',
+        width: 600,
+        height: 600,
+        url: rootUrl + 'Base_SysManage/Common/ShowBigImg?url={0}'.format(url),
+    });
+}
+
+//获取图片构造的Html
+function getImgHtml(imgs) {
+    var html = '';
+    (imgs || '').split(',').forEach(function (item, index) {
+        if (item == '')
+            return;
+        var br = '';
+        if (index != 0)
+            br = '<br />';
+        html += '{0}<a href="javascript:;" onclick="showBigImg(\'{1}\')"><img src="{1}" style="width:100px;height:100px" /></a>'.format(br, item);
+    });
+
+    return html;
+}

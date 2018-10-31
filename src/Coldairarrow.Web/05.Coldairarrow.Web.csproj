@@ -667,6 +667,7 @@
     <Compile Include="Areas\Base_SysManage\Controllers\Base_SysRoleController.cs" />
     <Compile Include="Areas\Base_SysManage\Controllers\Base_UserController.cs" />
     <Compile Include="Areas\Base_SysManage\Controllers\CityController.cs" />
+    <Compile Include="Areas\Base_SysManage\Controllers\CommonController.cs" />
     <Compile Include="Areas\Base_SysManage\Controllers\RapidDevelopmentController.cs" />
     <Compile Include="Common\PermissionManage.cs" />
     <Compile Include="Common\SystemMenuManage.cs" />
@@ -701,6 +702,7 @@
     <Content Include="Areas\Base_SysManage\Views\Base_SysLog\Index.cshtml" />
     <Content Include="Areas\Base_SysManage\Views\City\Index.cshtml" />
     <Content Include="Config\NingboGeojson.json" />
+    <Content Include="Areas\Base_SysManage\Views\Common\ShowBigImg.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />

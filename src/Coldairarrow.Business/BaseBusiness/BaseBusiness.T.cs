@@ -539,6 +539,23 @@ namespace Coldairarrow.Business
             BusHelper.HandleException(ex);
         }
 
+        /// <summary>
+        /// 校验重复的数据字段
+        /// </summary>
+        /// <param name="data">校验的数据</param>
+        /// <param name="properties">校验的属性，Key为字段名，Value为重复后的提示信息</param>
+        public void CheckProperty(T data, Dictionary<string, string> properties)
+        {
+            foreach (var aProperty in properties)
+            {
+                int count = GetIQueryable()
+                    .Where($"Id!=@0&&{aProperty.Key}==@1", data.GetPropertyValue("Id"), data.GetPropertyValue(aProperty.Key))
+                    .Count();
+                if (count > 0)
+                    throw new Exception(aProperty.Value);
+            }
+        }
+
         #endregion
     }
 }

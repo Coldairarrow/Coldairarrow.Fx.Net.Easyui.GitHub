@@ -5,6 +5,7 @@
 
     function Html5Uploader(container, options) {
         var defaults = {
+            imgs: [],
             enableScale: true,
             asyncUpload: false,
             uploadUrl: null,
@@ -66,6 +67,19 @@
             });
 
             uploadCountCheck();
+
+            var imgs = [];
+            if (options.imgs) {
+                var type = getType(options.imgs);
+                switch (type) {
+                    case 'string': imgs = options.imgs.split(','); break;
+                    case 'array': imgs = options.imgs; break;
+                    default: break;
+                }
+            }
+            imgs.forEach(function (url) {
+                insertItem(url);
+            });
         }
 
         function asyncUpload(index) {
