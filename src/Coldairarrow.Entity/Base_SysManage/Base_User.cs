@@ -14,7 +14,7 @@ namespace Coldairarrow.Entity.Base_SysManage
         /// <summary>
         /// ´úÀíÖ÷¼ü
         /// </summary>
-        [Key]
+        [Key, Column(Order = 1)]
         public String Id { get; set; }
 
         /// <summary>
