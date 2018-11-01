@@ -18,6 +18,7 @@ namespace Coldairarrow.Console1
         {
             var dbHelper = DbHelperFactory.GetDbHelper(DatabaseType.SqlServer, "BaseDb");
             var tableInfo = dbHelper.GetDbTableInfo("Dev_Project");
+            var tables = dbHelper.GetDbAllTables();
 
             Console.WriteLine("完成");
             Console.ReadLine();
