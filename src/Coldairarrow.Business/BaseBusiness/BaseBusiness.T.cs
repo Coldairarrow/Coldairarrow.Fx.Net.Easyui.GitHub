@@ -548,11 +548,12 @@ namespace Coldairarrow.Business
         {
             foreach (var aProperty in properties)
             {
-                int count = GetIQueryable()
-                    .Where($"Id!=@0&&{aProperty.Key}==@1", data.GetPropertyValue("Id"), data.GetPropertyValue(aProperty.Key))
-                    .Count();
-                if (count > 0)
-                    throw new Exception(aProperty.Value);
+                if (!data.GetPropertyValue(aProperty.Key).IsNullOrEmpty())
+                {
+                    int count = GetIQueryable().Where($"Id!=@0&&{aProperty.Key}==@1", data.GetPropertyValue("Id"), data.GetPropertyValue(aProperty.Key)).Count();
+                    if (count > 0)
+                        throw new Exception(aProperty.Value);
+                }
             }
         }
 
