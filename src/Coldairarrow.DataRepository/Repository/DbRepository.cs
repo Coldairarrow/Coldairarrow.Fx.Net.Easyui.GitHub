@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -131,6 +132,21 @@ namespace Coldairarrow.DataRepository
             var internalQuery = internalQueryField.GetValue(query);
             var objectQueryField = internalQuery.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance).Where(f => f.Name.Equals("_objectQuery")).FirstOrDefault();
             return objectQueryField.GetValue(internalQuery) as ObjectQuery<T>;
+        }
+        private void CheckEntityState<T>(T entity) where T : class
+        {
+            if (Db.Entry(entity).State == EntityState.Detached)
+            {
+                var objectContext = ((IObjectContextAdapter)Db).ObjectContext;
+                var entitySet = objectContext.CreateObjectSet<T>();
+                var entityKey = objectContext.CreateEntityKey(entitySet.EntitySet.Name, entity);
+                object foundSet;
+                bool exists = objectContext.TryGetObjectByKey(entityKey, out foundSet);
+                if (exists)
+                {
+                    objectContext.Detach(foundSet); //从上下文中移除
+                }
+            }
         }
 
         #endregion
@@ -324,6 +340,8 @@ namespace Coldairarrow.DataRepository
         /// <param name="entity">实体对象</param>
         public void Delete<T>(T entity) where T : class, new()
         {
+            CheckEntityState(entity);
+
             Db.Set<T>().Attach(entity);
             Db.Set<T>().Remove(entity);
             Commit();
@@ -338,6 +356,8 @@ namespace Coldairarrow.DataRepository
         {
             foreach (var entity in entities)
             {
+                CheckEntityState(entity);
+
                 Db.Set<T>().Attach(entity);
                 Db.Set<T>().Remove(entity);
             }
@@ -398,6 +418,8 @@ namespace Coldairarrow.DataRepository
         /// <param name="entity"></param>
         public void Update<T>(T entity) where T : class, new()
         {
+            CheckEntityState(entity);
+
             Db.Entry(entity).State = EntityState.Modified;
 
             Commit();
@@ -412,6 +434,8 @@ namespace Coldairarrow.DataRepository
         {
             entities.ForEach(aEntity =>
             {
+                CheckEntityState(aEntity);
+
                 Db.Entry(aEntity).State = EntityState.Modified;
             });
 
@@ -426,6 +450,8 @@ namespace Coldairarrow.DataRepository
         /// <param name="properties">需要更新的字段</param>
         public void UpdateAny<T>(T entity, List<string> properties) where T : class, new()
         {
+            CheckEntityState(entity);
+
             Db.Set<T>().Attach(entity);
             properties.ForEach(aProperty =>
             {
@@ -444,6 +470,8 @@ namespace Coldairarrow.DataRepository
         {
             entities.ForEach(aEntity =>
             {
+                CheckEntityState(aEntity);
+
                 Db.Set<T>().Attach(aEntity);
                 properties.ForEach(aProperty =>
                 {
