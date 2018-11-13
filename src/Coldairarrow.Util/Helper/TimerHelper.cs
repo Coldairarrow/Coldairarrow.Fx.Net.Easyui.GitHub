@@ -41,5 +41,25 @@ namespace Coldairarrow.Util
 
             return threadTimer;
         }
+
+        /// <summary>
+        /// 一段时间后执行操作
+        /// </summary>
+        /// <param name="action">需要执行的操作</param>
+        /// <param name="dely">延时时间</param>
+        public static void SetTimeout(Action action,TimeSpan dely)
+        {
+            if (dely == TimeSpan.Zero)
+                action();
+            else
+            {
+                Timer timer = null;
+                action += () =>
+                {
+                    timer.Dispose();
+                };
+                timer = SetInterval(action, new TimeSpan(0, 0, 1), dely);
+            }
+        }
     }
 }
