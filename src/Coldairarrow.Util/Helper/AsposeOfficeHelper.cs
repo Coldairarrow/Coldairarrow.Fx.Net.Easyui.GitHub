@@ -91,8 +91,10 @@ namespace Coldairarrow.Util
         /// </summary>
         /// <param name="fileBytes">文件字节源</param>
         /// <param name="exportColumnName">是否将第一行当作标题行</param>
+        /// <param name="firstColumn">第一行索引</param>
+        /// <param name="firstRow">第一列索引</param>
         /// <returns></returns>
-        public static DataTable ReadExcel(byte[] fileBytes,bool exportColumnName)
+        public static DataTable ReadExcel(byte[] fileBytes, bool exportColumnName, int firstRow = 0, int firstColumn = 0)
         {
             using (MemoryStream ms = new MemoryStream(fileBytes))
             {
@@ -100,7 +102,7 @@ namespace Coldairarrow.Util
                 Worksheet sheet = book.Worksheets[0];
                 Cells cells = sheet.Cells;
 
-                return cells.ExportDataTableAsString(0, 0, cells.MaxDataRow + 1, cells.MaxDataColumn + 1, exportColumnName);
+                return cells.ExportDataTableAsString(firstRow, firstColumn, cells.MaxDataRow + 1 - firstRow, cells.MaxDataColumn + 1 - firstColumn, exportColumnName);
             }
         }
     }
