@@ -16,14 +16,9 @@ namespace Coldairarrow.Console1
     {
         static void Main(string[] args)
         {
-            //var dbHelper = DbHelperFactory.GetDbHelper(DatabaseType.SqlServer, "BaseDb");
-            //var tableInfo = dbHelper.GetDbTableInfo("Dev_Project");
-            //var tables = dbHelper.GetDbAllTables();
-            TimerHelper.SetTimeout(() =>
-            {
-                Console.WriteLine("执行111111");
-            }, new TimeSpan(0, 0, 0));
-
+            var dbHelper = DbHelperFactory.GetDbHelper(DatabaseType.SqlServer, "BaseDb");
+            var tableInfo = dbHelper.GetDbTableInfo("AAAAAAAAA");
+            var tables = dbHelper.GetDbAllTables();
 
             Console.WriteLine("完成");
             Console.ReadLine();
