@@ -32,6 +32,16 @@ namespace Coldairarrow.Web
         }
 
         /// <summary>
+        /// 返回JSON格式的内容
+        /// </summary>
+        /// <param name="jsonStr">JSON字符串</param>
+        /// <returns></returns>
+        public ContentResult JsonContent(string jsonStr)
+        {
+            return Content(jsonStr, "application/json");
+        }
+
+        /// <summary>
         /// 返回成功
         /// </summary>
         /// <returns></returns>
@@ -44,7 +54,7 @@ namespace Coldairarrow.Web
                 Data = null
             };
 
-            return Content(res.ToJson());
+            return JsonContent(res.ToJson());
         }
 
         /// <summary>
@@ -61,7 +71,7 @@ namespace Coldairarrow.Web
                 Data = null
             };
 
-            return Content(res.ToJson());
+            return JsonContent(res.ToJson());
         }
 
         /// <summary>
@@ -78,7 +88,7 @@ namespace Coldairarrow.Web
                 Data = data
             };
 
-            return Content(res.ToJson());
+            return JsonContent(res.ToJson());
         }
 
         /// <summary>
@@ -96,7 +106,7 @@ namespace Coldairarrow.Web
                 Data = data
             };
 
-            return Content(res.ToJson());
+            return JsonContent(res.ToJson());
         }
 
         /// <summary>
@@ -112,7 +122,7 @@ namespace Coldairarrow.Web
                 Data = null
             };
 
-            return Content(res.ToJson());
+            return JsonContent(res.ToJson());
         }
 
         /// <summary>
@@ -129,7 +139,7 @@ namespace Coldairarrow.Web
                 Data = null
             };
 
-            return Content(res.ToJson());
+            return JsonContent(res.ToJson());
         }
 
         /// <summary>
