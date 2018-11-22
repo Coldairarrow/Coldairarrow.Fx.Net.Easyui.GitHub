@@ -24,11 +24,6 @@ namespace Coldairarrow.Business.Base_SysManage
         /// <returns></returns>
         public List<Base_UserModel> GetDataList(string condition, string keyword, Pagination pagination)
         {
-            string sql = string.Empty;
-            Service.GetDbContext().Database.Log = log =>
-            {
-                sql += log + "\n";
-            };
             var where = LinqHelper.True<Base_UserModel>();
 
             Expression<Func<Base_User, Base_UserModel>> selectExpre = a => new Base_UserModel
