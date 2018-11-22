@@ -81,7 +81,9 @@
     <Compile Include="Base_SysManage\Base_UserBusiness.cs" />
     <Compile Include="Base_SysManage\CheckSignBusiness.cs" />
     <Compile Include="Base_SysManage\HomeBusiness.cs" />
+    <Compile Include="Base_SysManage\PermissionManage.cs" />
     <Compile Include="Base_SysManage\RapidDevelopmentBusiness.cs" />
+    <Compile Include="Base_SysManage\UrlPermissionManage.cs" />
     <Compile Include="Common\BusHelper.cs" />
     <Compile Include="Common\Operator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

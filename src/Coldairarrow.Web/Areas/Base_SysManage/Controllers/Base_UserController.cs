@@ -76,7 +76,6 @@ namespace Coldairarrow.Web
             }
 
             _base_UserBusiness.SetUserRole(theData.UserId, roleIdList);
-            PermissionManage.UpdateUserPermissionCache(theData.UserId);
 
             return Success();
         }

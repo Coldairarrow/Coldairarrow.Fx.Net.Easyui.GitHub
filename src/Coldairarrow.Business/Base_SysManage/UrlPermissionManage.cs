@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Web;
 using System.Xml.Linq;
 
-namespace Coldairarrow.Web
+namespace Coldairarrow.Business.Base_SysManage
 {
     public static class UrlPermissionManage
     {

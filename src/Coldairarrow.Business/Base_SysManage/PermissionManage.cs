@@ -1,6 +1,4 @@
-﻿using Coldairarrow.Business;
-using Coldairarrow.Business.Base_SysManage;
-using Coldairarrow.Business.Common;
+﻿using Coldairarrow.Business.Common;
 using Coldairarrow.Entity.Base_SysManage;
 using Coldairarrow.Util;
 using System;
@@ -9,7 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Xml.Linq;
 
-namespace Coldairarrow.Web
+namespace Coldairarrow.Business.Base_SysManage
 {
     /// <summary>
     /// 权限管理静态类

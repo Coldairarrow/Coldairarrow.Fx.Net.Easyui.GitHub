@@ -113,8 +113,6 @@ namespace Coldairarrow.Web
         {
             _base_SysRoleBusiness.SavePermission(roleId, permissions.ToList<string>());
 
-            PermissionManage.ClearUserPermissionCache();
-
             return Success();
         }
 

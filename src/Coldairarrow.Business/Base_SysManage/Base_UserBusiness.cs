@@ -24,27 +24,50 @@ namespace Coldairarrow.Business.Base_SysManage
         /// <returns></returns>
         public List<Base_UserModel> GetDataList(string condition, string keyword, Pagination pagination)
         {
-            var whereExpre = LinqHelper.True<Base_UserModel>();
-
-            Expression<Func<Base_User, object, object, Base_UserModel>> selectExpre = (a, b, c) => new Base_UserModel
+            string sql = string.Empty;
+            Service.GetDbContext().Database.Log = log =>
             {
-                RoleNameList = (List<string>)b,
-                RoleIdList = (List<string>)c
+                sql += log + "\n";
+            };
+            var where = LinqHelper.True<Base_UserModel>();
+
+            Expression<Func<Base_User, Base_UserModel>> selectExpre = a => new Base_UserModel
+            {
+
             };
             selectExpre = selectExpre.BuildExtendSelectExpre();
 
-            var db_Base_UserRoleMap = Service.GetIQueryable<Base_UserRoleMap>();
-            var db_Base_SysRole = Service.GetIQueryable<Base_SysRole>();
             var q = from a in GetIQueryable().AsExpandable()
-                    let roleIds = db_Base_UserRoleMap.Where(x => x.UserId == a.UserId).Select(x => x.RoleId)
-                    let roleNames = db_Base_SysRole.Where(x => roleIds.Contains(x.RoleId)).Select(x => x.RoleName)
-                    select selectExpre.Invoke(a, roleNames, roleIds);
+                    select selectExpre.Invoke(a);
 
             //模糊查询
             if (!condition.IsNullOrEmpty() && !keyword.IsNullOrEmpty())
                 q = q.Where($@"{condition}.Contains(@0)", keyword);
 
-            return q.GetPagination(pagination).ToList();
+            var list= q.Where(where).GetPagination(pagination).ToList();
+            SetProperty(list);
+
+            return list;
+
+            void SetProperty(List<Base_UserModel> users)
+            {
+                //补充用户角色属性
+                List<string> userIds = users.Select(x => x.UserId).ToList();
+                var userRoles = (from a in Service.GetIQueryable<Base_UserRoleMap>()
+                                 join b in Service.GetIQueryable<Base_SysRole>() on a.RoleId equals b.RoleId
+                                 where userIds.Contains(a.UserId)
+                                 select new
+                                 {
+                                     a.UserId,
+                                     b.RoleId,
+                                     b.RoleName
+                                 }).ToList();
+                users.ForEach(aUser =>
+                {
+                    aUser.RoleIdList = userRoles.Where(x => x.UserId == aUser.UserId).Select(x => x.RoleId).ToList();
+                    aUser.RoleNameList = userRoles.Where(x => x.UserId == aUser.UserId).Select(x => x.RoleName).ToList();
+                });
+            }
         }
 
         /// <summary>
@@ -89,6 +112,7 @@ namespace Coldairarrow.Business.Base_SysManage
 
             Service.Insert(insertList);
             _cache.UpdateCache(userId);
+            PermissionManage.UpdateUserPermissionCache(userId);
         }
 
         /// <summary>

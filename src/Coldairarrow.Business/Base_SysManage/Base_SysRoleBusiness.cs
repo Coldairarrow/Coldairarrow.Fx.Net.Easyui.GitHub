@@ -85,6 +85,7 @@ namespace Coldairarrow.Business.Base_SysManage
             });
 
             Service.Insert(insertList);
+            PermissionManage.ClearUserPermissionCache();
         }
 
         #endregion
