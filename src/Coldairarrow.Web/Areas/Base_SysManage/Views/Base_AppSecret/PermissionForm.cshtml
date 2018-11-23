@@ -1,9 +1,10 @@
-﻿@{
+﻿@using Coldairarrow.Business.Base_SysManage;
+
+@{
     Layout = "~/Views/Shared/_Layout_List.cshtml";
 
     var permissions = PermissionManage.GetAppIdPermissionModules((string)ViewData["appId"]);
 }
-
 <div class="easyui-panel" data-options="fit:true,footer:'#ft_role_permission'">
     <table id="db_role_permission" class="table_base table_grid" style="width:100%;border-width:0;">
         <thead>
