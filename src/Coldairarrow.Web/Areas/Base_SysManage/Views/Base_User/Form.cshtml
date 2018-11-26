@@ -90,7 +90,7 @@
             theEntity['RoleIdList'] = JSON.stringify(roleIds);
             $.postJSON(rootUrl + 'Base_SysManage/Base_User/SaveData', theEntity, function (resJson) {
                 if (resJson.Success) {
-                    parent.$('#dataTable').datagrid('reload');
+                    parent.$('#dataTable').datagrid('clearChecked').datagrid('reload');
                     parent.dialogMsg('±£´æ³É¹¦!');
                     parent.dialogClose('form');
                 }
