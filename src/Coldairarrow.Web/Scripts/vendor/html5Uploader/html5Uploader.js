@@ -170,16 +170,16 @@
                         scaleHeight = this.naturalHeight;
 
                     // 如果高度超标
-                    if (scaleHeight > options.maxHeight) {
-                        // 宽度等比例缩放 *=
-                        scaleWidth *= options.maxHeight / scaleHeight;
-                        scaleHeight = options.maxHeight;
-                    }
-                    if (scaleWidth > options.maxWidth) {
-                        // 高度等比例缩放 *=
-                        scaleHeight *= options.maxWidth / scaleWidth;
-                        scaleWidth = options.maxWidth;
-                    }
+                    //if (scaleHeight > options.maxHeight) {
+                    //    // 宽度等比例缩放 *=
+                    //    scaleWidth *= options.maxHeight / scaleHeight;
+                    //    scaleHeight = options.maxHeight;
+                    //}
+                    //if (scaleWidth > options.maxWidth) {
+                    //    // 高度等比例缩放 *=
+                    //    scaleHeight *= options.maxWidth / scaleWidth;
+                    //    scaleWidth = options.maxWidth;
+                    //}
                     this.width = scaleWidth,
                     this.height = scaleHeight;
 
