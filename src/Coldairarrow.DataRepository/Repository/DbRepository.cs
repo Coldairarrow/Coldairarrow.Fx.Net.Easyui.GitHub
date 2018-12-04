@@ -241,6 +241,13 @@ namespace Coldairarrow.DataRepository
         {
             return Db;
         }
+        public Action<string> HandleSqlLog
+        {
+            set
+            {
+                Db.Database.Log = value;
+            }
+        }
 
         #endregion
 
