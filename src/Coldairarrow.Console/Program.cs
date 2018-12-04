@@ -17,6 +17,11 @@ namespace Coldairarrow.Console1
     {
         static void Main(string[] args)
         {
+            Base_UserBusiness bus = new Base_UserBusiness();
+            bus.Service.GetDbContext().Database.Log = log =>
+            {
+                Console.WriteLine(log);
+            };
             Console.WriteLine("完成");
             Console.ReadLine();
         }
