@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Threading.Tasks;
 
 namespace Coldairarrow.Util.Sockets
 {
@@ -76,13 +75,13 @@ namespace Coldairarrow.Util.Sockets
                     }
                     catch (Exception ex)
                     {
-                        HandleException?.Invoke(ex);
+                        AccessException(ex);
                     }
                 }, null);
             }
             catch (Exception ex)
             {
-                HandleException?.Invoke(ex);
+                AccessException(ex);
             }
         }
         private bool PortInUse(int port)
@@ -92,6 +91,20 @@ namespace Coldairarrow.Util.Sockets
         }
         private ConcurrentDictionary<string, TcpSocketConnection> _connectionList { get; } = new ConcurrentDictionary<string, TcpSocketConnection>();
         private SendCheckMsg _sendCheckMsg { get; } = new SendCheckMsg();
+        private void AccessException(Exception ex)
+        {
+            if (!(ex is ObjectDisposedException))
+            {
+                try
+                {
+                    HandleException?.Invoke(ex);
+                }
+                catch
+                {
+
+                }
+            }
+        }
 
         #endregion
 
@@ -125,7 +138,7 @@ namespace Coldairarrow.Util.Sockets
             }
             catch (Exception ex)
             {
-                HandleException?.Invoke(ex);
+                AccessException(ex);
             }
         }
 
@@ -233,31 +246,7 @@ namespace Coldairarrow.Util.Sockets
         /// <summary>
         /// 异常处理程序
         /// </summary>
-        public Action<Exception> HandleException
-        {
-            get
-            {
-                return _handleException;
-            }
-            set
-            {
-                _handleException = x =>
-                {
-                    Task.Run(() =>
-                    {
-                        try
-                        {
-                            value?.Invoke(x);
-                        }
-                        catch
-                        {
-
-                        }
-                    });
-                };
-            }
-        }
-        private Action<Exception> _handleException;
+        public Action<Exception> HandleException { get; set; }
 
         #endregion
 

@@ -41,6 +41,20 @@ namespace Coldairarrow.Util.Sockets
         /// 接收区大小,单位:字节
         /// </summary>
         private int _recLength { get; set; }
+        private void AccessException(Exception ex)
+        {
+            if (!(ex is ObjectDisposedException))
+            {
+                try
+                {
+                    HandleException?.Invoke(ex);
+                }
+                catch
+                {
+
+                }
+            }
+        }
 
         #endregion
 
@@ -61,7 +75,7 @@ namespace Coldairarrow.Util.Sockets
                         int length = _socket.EndReceive(asyncResult);
 
                         //马上进行下一轮接受，增加吞吐量
-                        if (length > 0 && _isRec && IsSocketConnected())
+                        if (length > 0 && _isRec && IsSocketConnected() && (!_isClosed))
                             StartRecMsg();
 
                         if (length > 0)
@@ -75,14 +89,14 @@ namespace Coldairarrow.Util.Sockets
                     }
                     catch (Exception ex)
                     {
-                        HandleException?.Invoke(ex);
+                        AccessException(ex);
                         Close();
                     }
                 }, null);
             }
             catch (Exception ex)
             {
-                HandleException?.Invoke(ex);
+                AccessException(ex);
                 Close();
             }
         }
@@ -104,13 +118,13 @@ namespace Coldairarrow.Util.Sockets
                     }
                     catch (Exception ex)
                     {
-                        HandleException?.Invoke(ex);
+                        AccessException(ex);
                     }
                 }, null);
             }
             catch (Exception ex)
             {
-                HandleException?.Invoke(ex);
+                AccessException(ex);
             }
         }
 
@@ -182,35 +196,25 @@ namespace Coldairarrow.Util.Sockets
                 _server.RemoveConnection(this);
 
                 _isRec = false;
-                _socket.BeginDisconnect(false, (asyncCallback) =>
+                if (IsSocketConnected())
                 {
-                    try
-                    {
-                        _socket.EndDisconnect(asyncCallback);
-                    }
-                    catch (Exception ex)
-                    {
-                        HandleException?.Invoke(ex);
-                    }
-                    finally
-                    {
-                        _socket.Dispose();
-                    }
-                }, null);
+                    _socket.Disconnect(false);
+                }
             }
             catch (Exception ex)
             {
-                HandleException?.Invoke(ex);
+                AccessException(ex);
             }
             finally
             {
                 try
                 {
+                    _socket?.Dispose();
                     HandleClientClose?.Invoke(_server, this);
                 }
                 catch (Exception ex)
                 {
-                    HandleException?.Invoke(ex);
+                    AccessException(ex);
                 }
             }
         }

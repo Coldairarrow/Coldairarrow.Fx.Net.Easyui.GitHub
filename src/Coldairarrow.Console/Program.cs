@@ -31,30 +31,47 @@ namespace Coldairarrow.Console1
     {
         static void Main(string[] args)
         {
-            Action<Exception> handleException = ex =>
-            {
-                Console.WriteLine(ex.Message);
-            };
             int port = 9999;
-            int count = 1000000;
+            int count = 1000;
+            int errorCount = 0;
             RPCServer rPCServer = new RPCServer(port);
+            rPCServer.HandleException = ex =>
+            {
+                Console.WriteLine(ExceptionHelper.GetExceptionAllMsg(ex));
+            };
             rPCServer.RegisterService<IHello, Hello>();
             rPCServer.Start();
             IHello client = null;
+            client = RPCClientFactory.GetClient<IHello>("127.0.0.1", port);
+            client.SayHello("111");
             Stopwatch watch = new Stopwatch();
+            List<Task> tasks = new List<Task>();
             watch.Start();
-            LoopHelper.Loop(count, () =>
+            LoopHelper.Loop(1, () =>
             {
-                client = RPCClientFactory.GetClient<IHello>("127.0.0.1", port);
+                tasks.Add(Task.Run(() =>
+                {
+                    LoopHelper.Loop(count, () =>
+                    {
+                        string msg = string.Empty;
+                        try
+                        {
+                            msg = client.SayHello("Hello");
+                        }
+                        catch (Exception ex)
+                        {
+                            errorCount++;
+                            Console.WriteLine($"错误次数：{errorCount}");
+                            Console.WriteLine(ExceptionHelper.GetExceptionAllMsg(ex));
+                        }
+                        //Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff")}:{msg}");
+                    });
+                }));
             });
+            Task.WaitAll(tasks.ToArray());
             watch.Stop();
-
-            //var res = client.SayHello("Hello");
-            //Console.WriteLine($"客户端:{res}");
-
-            Console.WriteLine($"耗时:{watch.ElapsedMilliseconds}ms");
-
-            Console.ReadLine();
+            Console.WriteLine($"每次耗时:{watch.Elapsed.TotalMilliseconds/count}ms");
+            Console.WriteLine($"错误次数：{errorCount}");
             Console.WriteLine("完成");
             Console.ReadLine();
         }

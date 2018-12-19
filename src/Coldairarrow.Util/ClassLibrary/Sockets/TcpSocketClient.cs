@@ -2,7 +2,6 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Coldairarrow.Util.Sockets
 {
@@ -42,6 +41,7 @@ namespace Coldairarrow.Util.Sockets
         private string _ip = "";
         private int _port = 0;
         private bool _isRec = true;
+        private bool _isClosed = false;
 
         /// <summary>
         /// 开始接受客户端消息
@@ -58,7 +58,7 @@ namespace Coldairarrow.Util.Sockets
                         int length = _socket.EndReceive(asyncResult);
 
                         //马上进行下一轮接受，增加吞吐量
-                        if (length > 0 && _isRec && IsSocketConnected())
+                        if (length > 0 && _isRec && IsSocketConnected() && (!_isClosed))
                             StartRecMsg();
 
                         if (length > 0)
@@ -74,15 +74,30 @@ namespace Coldairarrow.Util.Sockets
                     }
                     catch (Exception ex)
                     {
-                        HandleException?.BeginInvoke(ex, null, null);
+                        AccessException(ex);
                         Close();
                     }
                 }, null);
             }
             catch (Exception ex)
             {
-                HandleException?.BeginInvoke(ex, null, null);
+                AccessException(ex);
                 Close();
+            }
+        }
+
+        private void AccessException(Exception ex)
+        {
+            if (!(ex is ObjectDisposedException))
+            {
+                try
+                {
+                    HandleException?.Invoke(ex);
+                }
+                catch
+                {
+
+                }
             }
         }
 
@@ -98,7 +113,7 @@ namespace Coldairarrow.Util.Sockets
         /// <summary>
         /// 开始服务，连接服务端
         /// </summary>
-        public void StartClient()
+        public bool StartClient()
         {
             try
             {
@@ -108,26 +123,16 @@ namespace Coldairarrow.Util.Sockets
                 IPAddress address = IPAddress.Parse(_ip);
                 //创建网络节点对象 包含 ip和port
                 IPEndPoint endpoint = new IPEndPoint(address, _port);
-                //将 监听套接字  绑定到 对应的IP和端口
-                _socket.BeginConnect(endpoint, asyncResult =>
-                {
-                    try
-                    {
-                        _socket.EndConnect(asyncResult);
-                        //开始接受服务器消息
-                        StartRecMsg();
-
-                        HandleClientStarted?.Invoke(this);
-                    }
-                    catch (Exception ex)
-                    {
-                        HandleException?.BeginInvoke(ex, null, null);
-                    }
-                }, null);
+                //连接服务端
+                _socket.Connect(endpoint);
+                //开始接受服务器消息
+                StartRecMsg();
+                return true;
             }
             catch (Exception ex)
             {
-                HandleException?.BeginInvoke(ex, null, null);
+                AccessException(ex);
+                return false;
             }
         }
 
@@ -158,13 +163,13 @@ namespace Coldairarrow.Util.Sockets
                     }
                     catch (Exception ex)
                     {
-                        HandleException?.BeginInvoke(ex, null, null);
+                        AccessException(ex);
                     }
                 }, null);
             }
             catch (Exception ex)
             {
-                HandleException?.BeginInvoke(ex, null, null);
+                AccessException(ex);
             }
         }
 
@@ -197,38 +202,32 @@ namespace Coldairarrow.Util.Sockets
         /// </summary>
         public void Close()
         {
+            if (_isClosed)
+                return;
+
             try
             {
+                _isClosed = true;
                 _isRec = false;
-                _socket.BeginDisconnect(false, asyncCallback =>
+                if (IsSocketConnected())
                 {
-                    try
-                    {
-                        _socket.EndDisconnect(asyncCallback);
-                    }
-                    catch (Exception ex)
-                    {
-                        HandleException?.BeginInvoke(ex, null, null);
-                    }
-                    finally
-                    {
-                        _socket.Dispose();
-                    }
-                }, null);
+                    _socket.Disconnect(false);
+                }
             }
             catch (Exception ex)
             {
-                HandleException?.BeginInvoke(ex, null, null);
+                AccessException(ex);
             }
             finally
             {
                 try
                 {
+                    _socket?.Dispose();
                     HandleClientClose?.Invoke(this);
                 }
                 catch (Exception ex)
                 {
-                    HandleException?.Invoke(ex);
+                    AccessException(ex);
                 }
             }
         }
@@ -269,31 +268,7 @@ namespace Coldairarrow.Util.Sockets
         /// <summary>
         /// 异常处理程序
         /// </summary>
-        public Action<Exception> HandleException
-        {
-            get
-            {
-                return _handleException;
-            }
-            set
-            {
-                _handleException = x =>
-                {
-                    Task.Run(() =>
-                    {
-                        try
-                        {
-                            value?.Invoke(x);
-                        }
-                        catch
-                        {
-
-                        }
-                    });
-                };
-            }
-        }
-        private Action<Exception> _handleException;
+        public Action<Exception> HandleException { get; set; }
 
         #endregion
     }

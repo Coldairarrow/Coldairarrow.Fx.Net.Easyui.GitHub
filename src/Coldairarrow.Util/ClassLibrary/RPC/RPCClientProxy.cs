@@ -10,8 +10,8 @@ namespace Coldairarrow.Util.RPC
 {
     class RPCClientProxy : DynamicObject
     {
-        public string _serverIp { get; set; }
-        public int _serverPort { get; set; }
+        public string ServerIp { get; set; }
+        public int ServerPort { get; set; }
         public string ServiceName { get; set; }
         public Type ServiceType { get; set; }
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
@@ -20,25 +20,36 @@ namespace Coldairarrow.Util.RPC
             {
                 AutoResetEvent waitEvent = new AutoResetEvent(false);
                 ResponseModel response = null;
-                TcpSocketClient socketClient = new TcpSocketClient(_serverIp, _serverPort)
+                TcpSocketClient socketClient = new TcpSocketClient(ServerIp, ServerPort)
                 {
                     HandleRecMsg = (a, bytes) =>
                     {
                         response = bytes.ToString(Encoding.UTF8).ToObject<ResponseModel>();
                         waitEvent.Set();
                     },
-                    RecLength = 1024 * 1024
+                    RecLength = 1024 * 1024,
+                    HandleException = new Action<Exception>(ex=> {
+                        Console.WriteLine(ExceptionHelper.GetExceptionAllMsg(ex));
+                    })
                 };
-                socketClient.StartClient();
-                RequestModel requestModel = new RequestModel
+                bool started = socketClient.StartClient();
+                if (started)
                 {
-                    ServiceName = ServiceName,
-                    MethodName = binder.Name,
-                    Paramters = args.ToList()
-                };
-                socketClient.Send(requestModel.ToJson().ToBytes(Encoding.UTF8));
-                waitEvent.WaitOne();
-                socketClient.Close();
+                    RequestModel requestModel = new RequestModel
+                    {
+                        ServiceName = ServiceName,
+                        MethodName = binder.Name,
+                        Paramters = args.ToList()
+                    };
+                    socketClient.Send(requestModel.ToJson().ToBytes(Encoding.UTF8));
+                    waitEvent.WaitOne(new TimeSpan(0, 0, 5));
+                    socketClient.Close();
+                }
+                else
+                {
+                    throw new Exception("连接到服务端失败!");
+                }
+                
                 if (response == null)
                     throw new Exception("服务器超时未响应");
                 else if (response.Success)

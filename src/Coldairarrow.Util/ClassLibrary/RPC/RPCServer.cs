@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Coldairarrow.Util.RPC
 {
@@ -58,10 +59,14 @@ namespace Coldairarrow.Util.RPC
                     finally
                     {
                         b.Send(response.ToJson().ToBytes(Encoding.UTF8));
-                        b.Close();
+                        Task.Run(() =>
+                        {
+                            b.Close();
+                        });
                     }
                 },
-                RecLength = 1024 * 1024
+                RecLength = 1024 * 1024,
+                HandleException = this.HandleException == null ? null : new Action<Exception>(this.HandleException)
             };
             _socketServer.StartServer();
         }
@@ -75,6 +80,8 @@ namespace Coldairarrow.Util.RPC
         {
             _socketServer.StopServer();
         }
+
+        public Action<Exception> HandleException { get; set; }
 
         #endregion
     }
