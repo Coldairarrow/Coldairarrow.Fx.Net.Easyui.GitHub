@@ -14,6 +14,7 @@ using Coldairarrow.Util.RPC;
 using System.Diagnostics;
 using Coldairarrow.Util.Wcf;
 using System.ServiceModel;
+using Coldairarrow.Util.Sockets;
 
 namespace Coldairarrow.Console1
 {
@@ -85,24 +86,51 @@ namespace Coldairarrow.Console1
             client.SayHello("Hello");
             Stopwatch watch = new Stopwatch();
             watch.Start();
-            LoopHelper.Loop(1, () =>
+            LoopHelper.Loop(10, () =>
             {
                 Task.Run(() =>
                 {
-                    LoopHelper.Loop(count, () =>
+                    LoopHelper.Loop(count, index =>
                     {
-                        var msg= client.SayHello("Hello");
-                        //Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss:fff")}:{msg}");
+                        var msg= client.SayHello("Hello"+index);
+                        Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss:fff")}:{msg}");
                     });
-                }).Wait();
+                });
+            });
+            watch.Stop();
+            Console.WriteLine($"每次耗时:{(double)watch.ElapsedMilliseconds / count}ms");
+        }
+
+        static void SocketTest()
+        {
+            int count = 1000;
+            int port = 11111;
+            Stopwatch watch = new Stopwatch();
+            TcpSocketServer server = new TcpSocketServer(port);
+            server.HandleRecMsg = (a, b, c) =>
+            {
+                b.Send(c);
+            };
+            server.StartServer();
+            watch.Start();
+            LoopHelper.Loop(count, () =>
+            {
+                AutoResetEvent waitEvent = new AutoResetEvent(false);
+                TcpSocketClient tcpSocketClient = new TcpSocketClient(port);
+                tcpSocketClient.HandleRecMsg = (a, b) =>
+                {
+                    waitEvent.Set();
+                };
+                tcpSocketClient.StartClient();
+                tcpSocketClient.Send(new byte[] { 0X01 });
+                waitEvent.WaitOne();
             });
             watch.Stop();
             Console.WriteLine($"每次耗时:{(double)watch.ElapsedMilliseconds / count}ms");
         }
         static void Main(string[] args)
         {
-            //WcfTest();
-            RpcTest();
+            SocketTest();
             Console.WriteLine("完成");
             Console.ReadLine();
         }
