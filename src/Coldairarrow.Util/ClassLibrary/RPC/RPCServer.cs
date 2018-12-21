@@ -59,10 +59,11 @@ namespace Coldairarrow.Util.RPC
                     finally
                     {
                         b.Send(response.ToJson().ToBytes(Encoding.UTF8));
-                        Task.Run(() =>
-                        {
-                            b.Close();
-                        });
+                        b.Close();
+                        //Task.Run(() =>
+                        //{
+                        //    b.Close();
+                        //});
                     }
                 },
                 RecLength = 1024 * 1024,

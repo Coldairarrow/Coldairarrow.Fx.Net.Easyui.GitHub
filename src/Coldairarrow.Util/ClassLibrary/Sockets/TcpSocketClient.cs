@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace Coldairarrow.Util.Sockets
 {
@@ -110,6 +111,31 @@ namespace Coldairarrow.Util.Sockets
         /// </summary>
         public int RecLength { get; set; } = 1024;
 
+        ///// <summary>
+        ///// 开始服务，连接服务端
+        ///// </summary>
+        //public bool StartClient()
+        //{
+        //    try
+        //    {
+        //        //实例化 套接字 （ip4寻址协议，流式传输，TCP协议）
+        //        _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        //        //创建 ip对象
+        //        IPAddress address = IPAddress.Parse(_ip);
+        //        //创建网络节点对象 包含 ip和port
+        //        IPEndPoint endpoint = new IPEndPoint(address, _port);
+        //        //连接服务端
+        //        _socket.Connect(endpoint);
+        //        //开始接受服务器消息
+        //        StartRecMsg();
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        AccessException(ex);
+        //        return false;
+        //    }
+        //}
         /// <summary>
         /// 开始服务，连接服务端
         /// </summary>
@@ -123,10 +149,26 @@ namespace Coldairarrow.Util.Sockets
                 IPAddress address = IPAddress.Parse(_ip);
                 //创建网络节点对象 包含 ip和port
                 IPEndPoint endpoint = new IPEndPoint(address, _port);
-                //连接服务端
-                _socket.Connect(endpoint);
-                //开始接受服务器消息
-                StartRecMsg();
+                //将 监听套接字  绑定到 对应的IP和端口
+                AutoResetEvent waitEvent = new AutoResetEvent(false);
+
+                _socket.BeginConnect(endpoint, asyncResult =>
+                {
+                    try
+                    {
+                        _socket.EndConnect(asyncResult);
+                        //开始接受服务器消息
+                        StartRecMsg();
+
+                        HandleClientStarted?.Invoke(this);
+                        waitEvent.Set();
+                    }
+                    catch (Exception ex)
+                    {
+                        AccessException(ex); ;
+                    }
+                }, null);
+                waitEvent.WaitOne();
                 return true;
             }
             catch (Exception ex)
@@ -197,6 +239,40 @@ namespace Coldairarrow.Util.Sockets
         /// </summary>
         public object Property { get; set; }
 
+        ///// <summary>
+        ///// 关闭与服务器的连接
+        ///// </summary>
+        //public void Close()
+        //{
+        //    if (_isClosed)
+        //        return;
+
+        //    try
+        //    {
+        //        _isClosed = true;
+        //        _isRec = false;
+        //        if (IsSocketConnected())
+        //        {
+        //            _socket.Disconnect(false);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        AccessException(ex);
+        //    }
+        //    finally
+        //    {
+        //        try
+        //        {
+        //            _socket?.Dispose();
+        //            HandleClientClose?.Invoke(this);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            AccessException(ex);
+        //        }
+        //    }
+        //}
         /// <summary>
         /// 关闭与服务器的连接
         /// </summary>
@@ -204,30 +280,50 @@ namespace Coldairarrow.Util.Sockets
         {
             if (_isClosed)
                 return;
-
             try
             {
                 _isClosed = true;
                 _isRec = false;
-                if (IsSocketConnected())
+                _socket.BeginDisconnect(false, asyncCallback =>
                 {
-                    _socket.Disconnect(false);
-                }
+                    try
+                    {
+                        _socket.EndDisconnect(asyncCallback);
+                    }
+                    catch (Exception ex)
+                    {
+                        AccessException(ex); ;
+                    }
+                    finally
+                    {
+                        _socket.Dispose();
+                    }
+                }, null);
+            }
+            catch (ObjectDisposedException)
+            {
+
             }
             catch (Exception ex)
             {
-                AccessException(ex);
+                try
+                {
+                    AccessException(ex); ;
+                }
+                catch
+                {
+
+                }
             }
             finally
             {
                 try
                 {
-                    _socket?.Dispose();
                     HandleClientClose?.Invoke(this);
                 }
                 catch (Exception ex)
                 {
-                    AccessException(ex);
+                    AccessException(ex); ;
                 }
             }
         }

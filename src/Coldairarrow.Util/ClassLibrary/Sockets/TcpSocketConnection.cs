@@ -183,6 +183,41 @@ namespace Coldairarrow.Util.Sockets
             }
         }
 
+        ///// <summary>
+        ///// 关闭当前连接
+        ///// </summary>
+        //public void Close()
+        //{
+        //    if (_isClosed)
+        //        return;
+        //    try
+        //    {
+        //        _isClosed = true;
+        //        _server.RemoveConnection(this);
+
+        //        _isRec = false;
+        //        if (IsSocketConnected())
+        //        {
+        //            _socket.Disconnect(false);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        AccessException(ex);
+        //    }
+        //    finally
+        //    {
+        //        try
+        //        {
+        //            _socket?.Dispose();
+        //            HandleClientClose?.Invoke(_server, this);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            AccessException(ex);
+        //        }
+        //    }
+        //}
         /// <summary>
         /// 关闭当前连接
         /// </summary>
@@ -196,25 +231,35 @@ namespace Coldairarrow.Util.Sockets
                 _server.RemoveConnection(this);
 
                 _isRec = false;
-                if (IsSocketConnected())
+                _socket.BeginDisconnect(false, (asyncCallback) =>
                 {
-                    _socket.Disconnect(false);
-                }
+                    try
+                    {
+                        _socket.EndDisconnect(asyncCallback);
+                    }
+                    catch (Exception ex)
+                    {
+                        HandleException?.Invoke(ex);
+                    }
+                    finally
+                    {
+                        _socket.Dispose();
+                    }
+                }, null);
             }
             catch (Exception ex)
             {
-                AccessException(ex);
+                HandleException?.Invoke(ex);
             }
             finally
             {
                 try
                 {
-                    _socket?.Dispose();
                     HandleClientClose?.Invoke(_server, this);
                 }
                 catch (Exception ex)
                 {
-                    AccessException(ex);
+                    HandleException?.Invoke(ex);
                 }
             }
         }

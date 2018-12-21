@@ -161,6 +161,11 @@
     <Compile Include="ClassLibrary\RPC\RPCServer.cs" />
     <Compile Include="ClassLibrary\SerialConnecter\SerialConnecter.cs" />
     <Compile Include="ClassLibrary\Sockets\SendCheckMsg.cs" />
+    <Compile Include="ClassLibrary\Sockets\TcpSocketClient.cs" />
+    <Compile Include="ClassLibrary\Sockets\TcpSocketConnection.cs" />
+    <Compile Include="ClassLibrary\Sockets\TcpSocketServer.cs" />
+    <Compile Include="ClassLibrary\Sockets\UdpSocketClient.cs" />
+    <Compile Include="ClassLibrary\Sockets\UdpSocketServer.cs" />
     <Compile Include="ClassLibrary\Sockets\WebSocketConnection.cs" />
     <Compile Include="ClassLibrary\Sockets\WebSocketServer.cs" />
     <Compile Include="ClassLibrary\TaskQeury.cs" />
@@ -190,11 +195,6 @@
     <Compile Include="Model\ErrorResult.cs" />
     <Compile Include="Model\SuccessResult.cs" />
     <Compile Include="WebApp\SessionHelper.cs" />
-    <Compile Include="ClassLibrary\Sockets\TcpSocketConnection.cs" />
-    <Compile Include="ClassLibrary\Sockets\TcpSocketClient.cs" />
-    <Compile Include="ClassLibrary\Sockets\TcpSocketServer.cs" />
-    <Compile Include="ClassLibrary\Sockets\UdpSocketClient.cs" />
-    <Compile Include="ClassLibrary\Sockets\UdpSocketServer.cs" />
     <Compile Include="ClassLibrary\WindowsService\WindowsService.cs">
       <SubType>Component</SubType>
     </Compile>
