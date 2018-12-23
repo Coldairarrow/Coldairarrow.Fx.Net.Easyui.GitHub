@@ -1,20 +1,21 @@
-﻿using Coldairarrow.Business.Base_SysManage;
-using Coldairarrow.Entity.Base_SysManage;
-using Coldairarrow.Util;
+﻿using Coldairarrow.Util;
+using Coldairarrow.Util.RPC;
+using Coldairarrow.Util.Sockets;
+using Coldairarrow.Util.Wcf;
+using DotNetty.Buffers;
+using DotNetty.Transport.Bootstrapping;
+using DotNetty.Transport.Channels;
+using DotNetty.Transport.Channels.Groups;
+using DotNetty.Transport.Channels.Sockets;
+using Echo.Client;
+using Echo.Server;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
+using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq.Dynamic;
-using System.Collections;
-using static Coldairarrow.Entity.Base_SysManage.EnumType;
-using Coldairarrow.Util.RPC;
-using System.Diagnostics;
-using Coldairarrow.Util.Wcf;
-using System.ServiceModel;
-using Coldairarrow.Util.Sockets;
 
 namespace Coldairarrow.Console1
 {
@@ -86,16 +87,16 @@ namespace Coldairarrow.Console1
             client.SayHello("Hello");
             Stopwatch watch = new Stopwatch();
             watch.Start();
-            LoopHelper.Loop(10, () =>
+            LoopHelper.Loop(1, () =>
             {
                 Task.Run(() =>
                 {
                     LoopHelper.Loop(count, index =>
                     {
-                        var msg= client.SayHello("Hello"+index);
-                        Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss:fff")}:{msg}");
+                        var msg = client.SayHello("Hello" + index);
+                        //Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss:ffffff")}:{msg}");
                     });
-                });
+                }).Wait();
             });
             watch.Stop();
             Console.WriteLine($"每次耗时:{(double)watch.ElapsedMilliseconds / count}ms");
@@ -115,22 +116,103 @@ namespace Coldairarrow.Console1
             watch.Start();
             LoopHelper.Loop(count, () =>
             {
-                AutoResetEvent waitEvent = new AutoResetEvent(false);
+                //AutoResetEvent waitEvent = new AutoResetEvent(false);
                 TcpSocketClient tcpSocketClient = new TcpSocketClient(port);
                 tcpSocketClient.HandleRecMsg = (a, b) =>
                 {
-                    waitEvent.Set();
+                    Console.WriteLine($"收到时间:{DateTime.Now.ToString("HH:mm:ss:ffffff")}");
+                    //waitEvent.Set();
                 };
                 tcpSocketClient.StartClient();
+                Console.WriteLine($"发送时间:{DateTime.Now.ToString("HH:mm:ss:ffffff")}");
                 tcpSocketClient.Send(new byte[] { 0X01 });
-                waitEvent.WaitOne();
+                //waitEvent.WaitOne();
+                Thread.Sleep(1000);
             });
             watch.Stop();
             Console.WriteLine($"每次耗时:{(double)watch.ElapsedMilliseconds / count}ms");
         }
+
+        static void DotNettyTest()
+        {
+            int port = 8007;
+            RunServerAsync();
+            RunClientAsync();
+
+            void RunServerAsync()
+            {
+                try
+                {
+                    var bootstrap = new ServerBootstrap()
+                        .Group(new MultithreadEventLoopGroup(1), new MultithreadEventLoopGroup())
+                        .Channel<TcpServerSocketChannel>()
+                        .Option(ChannelOption.SoBacklog, 100)
+                        .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
+                        {
+                            IChannelPipeline pipeline = channel.Pipeline;
+
+                            pipeline.AddLast(new EchoServerHandler());
+                        }));
+
+                    IChannel boundChannel = bootstrap.BindAsync(port).Result;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+
+            void RunClientAsync()
+            {
+                var group = new MultithreadEventLoopGroup();
+                try
+                {
+                    var bootstrap = new Bootstrap()
+                        .Group(group)
+                        .Channel<TcpSocketChannel>()
+                        .Option(ChannelOption.TcpNodelay, true)
+                        .Handler(new ActionChannelInitializer<ISocketChannel>(channel =>
+                        {
+                            IChannelPipeline pipeline = channel.Pipeline;
+                            pipeline.AddLast(new EchoClientHandler());
+                        }));
+                    IChannel clientChannel = bootstrap.ConnectAsync($"127.0.0.1:{port}".ToIPEndPoint()).Result;
+                    IChannel clientChanne2 = bootstrap.ConnectAsync($"127.0.0.1:{port}".ToIPEndPoint()).Result;
+                    clientChanne2.DisconnectAsync();
+                    //clientChannel.DisconnectAsync();
+                    while (true)
+                    {
+                        try
+                        {
+                            IByteBuffer msg = Unpooled.WrappedBuffer(Encoding.UTF8.GetBytes($"Hello World{GetTime()}"));
+                            Console.WriteLine($"{GetTime()}:发送到服务器");
+                            clientChannel.WriteAndFlushAsync(msg);
+                            msg = Unpooled.WrappedBuffer(Encoding.UTF8.GetBytes($"Hello World{GetTime()}"));
+                            clientChanne2.WriteAndFlushAsync(msg);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                        }
+                        Thread.Sleep(1000);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+
+            string GetTime()
+            {
+                return $"{(double)DateTime.Now.Ticks / 10000}ms";
+            }
+        }
         static void Main(string[] args)
         {
-            SocketTest();
+            //WcfTest();
+            //SocketTest();
+            DotNettyTest();
             Console.WriteLine("完成");
             Console.ReadLine();
         }
