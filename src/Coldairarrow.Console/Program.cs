@@ -179,7 +179,6 @@ namespace Coldairarrow.Console1
                     IChannel clientChannel = bootstrap.ConnectAsync($"127.0.0.1:{port}".ToIPEndPoint()).Result;
                     IChannel clientChanne2 = bootstrap.ConnectAsync($"127.0.0.1:{port}".ToIPEndPoint()).Result;
                     clientChanne2.DisconnectAsync();
-                    //clientChannel.DisconnectAsync();
                     while (true)
                     {
                         try
@@ -205,7 +204,7 @@ namespace Coldairarrow.Console1
 
             string GetTime()
             {
-                return $"{(double)DateTime.Now.Ticks / 10000}ms";
+                return $"{DateTime.Now.Ticks}";
             }
         }
         static void Main(string[] args)

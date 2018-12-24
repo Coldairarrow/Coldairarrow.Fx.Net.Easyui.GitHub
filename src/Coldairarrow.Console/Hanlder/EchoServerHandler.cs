@@ -16,11 +16,6 @@ namespace Echo.Server
         {
             var buffer = message as IByteBuffer;
             var bytes = buffer.Array;
-            //if (buffer != null)
-            //{
-            //    Console.WriteLine($"客户端:{context.Channel.Id}");
-            //    Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss:ffffff")}:收到客户端数据:{buffer.ToString(Encoding.UTF8)}");
-            //}
             context.WriteAsync(message);
         }
         public override void ChannelRegistered(IChannelHandlerContext context)

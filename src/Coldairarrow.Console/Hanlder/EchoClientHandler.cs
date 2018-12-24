@@ -15,7 +15,7 @@ namespace Echo.Client
         public override void ChannelRead(IChannelHandlerContext context, object message)
         {
             count++;
-            Console.WriteLine($"{(double)DateTime.Now.Ticks / 10000}:收到服务器数据");
+            Console.WriteLine($"{DateTime.Now.Ticks}:收到服务器数据");
         }
         public override void ChannelReadComplete(IChannelHandlerContext context) => context.Flush();
 
