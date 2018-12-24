@@ -1,4 +1,5 @@
-﻿using Coldairarrow.Util;
+﻿using Coldairarrow.Entity.Base_SysManage;
+using Coldairarrow.Util;
 using Coldairarrow.Util.RPC;
 using Coldairarrow.Util.Sockets;
 using Coldairarrow.Util.Wcf;
@@ -12,6 +13,7 @@ using Echo.Server;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading;
@@ -79,7 +81,7 @@ namespace Coldairarrow.Console1
         }
         static void WcfTest()
         {
-            int count = 10000;
+            int count = int.MaxValue;
 
             WcfHost<IHello, Hello> wcfHost = new WcfHost<IHello, Hello>();
             wcfHost.StartHost();
@@ -94,7 +96,7 @@ namespace Coldairarrow.Console1
                     LoopHelper.Loop(count, index =>
                     {
                         var msg = client.SayHello("Hello" + index);
-                        //Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss:ffffff")}:{msg}");
+                        Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss:ffffff")}:{msg}");
                     });
                 }).Wait();
             });
@@ -144,14 +146,14 @@ namespace Coldairarrow.Console1
                 try
                 {
                     var bootstrap = new ServerBootstrap()
-                        .Group(new MultithreadEventLoopGroup(1), new MultithreadEventLoopGroup())
+                        .Group(new MultithreadEventLoopGroup(1), new MultithreadEventLoopGroup(4))
                         .Channel<TcpServerSocketChannel>()
                         .Option(ChannelOption.SoBacklog, 100)
                         .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
                         {
                             IChannelPipeline pipeline = channel.Pipeline;
 
-                            pipeline.AddLast(new EchoServerHandler());
+                            pipeline.AddLast(new EchoServerHandler("小明"));
                         }));
 
                     IChannel boundChannel = bootstrap.BindAsync(port).Result;
@@ -164,11 +166,10 @@ namespace Coldairarrow.Console1
 
             void RunClientAsync()
             {
-                var group = new MultithreadEventLoopGroup();
                 try
                 {
                     var bootstrap = new Bootstrap()
-                        .Group(group)
+                        .Group(new MultithreadEventLoopGroup())
                         .Channel<TcpSocketChannel>()
                         .Option(ChannelOption.TcpNodelay, true)
                         .Handler(new ActionChannelInitializer<ISocketChannel>(channel =>
@@ -176,18 +177,14 @@ namespace Coldairarrow.Console1
                             IChannelPipeline pipeline = channel.Pipeline;
                             pipeline.AddLast(new EchoClientHandler());
                         }));
-                    IChannel clientChannel = bootstrap.ConnectAsync($"127.0.0.1:{port}".ToIPEndPoint()).Result;
-                    IChannel clientChanne2 = bootstrap.ConnectAsync($"127.0.0.1:{port}".ToIPEndPoint()).Result;
-                    clientChanne2.DisconnectAsync();
                     while (true)
                     {
                         try
                         {
-                            IByteBuffer msg = Unpooled.WrappedBuffer(Encoding.UTF8.GetBytes($"Hello World{GetTime()}"));
-                            Console.WriteLine($"{GetTime()}:发送到服务器");
+                            EchoClientHandler.watch.Restart();
+                            IChannel clientChannel = bootstrap.ConnectAsync($"127.0.0.1:{port}".ToIPEndPoint()).Result;
+                            IByteBuffer msg = Unpooled.WrappedBuffer(Encoding.UTF8.GetBytes($"Hello World AAAA"));
                             clientChannel.WriteAndFlushAsync(msg);
-                            msg = Unpooled.WrappedBuffer(Encoding.UTF8.GetBytes($"Hello World{GetTime()}"));
-                            clientChanne2.WriteAndFlushAsync(msg);
                         }
                         catch (Exception ex)
                         {
@@ -204,14 +201,15 @@ namespace Coldairarrow.Console1
 
             string GetTime()
             {
-                return $"{DateTime.Now.Ticks}";
+                return $"{(double)DateTime.Now.Ticks/10000}ms";
             }
         }
         static void Main(string[] args)
         {
             //WcfTest();
             //SocketTest();
-            DotNettyTest();
+            //DotNettyTest();
+
             Console.WriteLine("完成");
             Console.ReadLine();
         }
