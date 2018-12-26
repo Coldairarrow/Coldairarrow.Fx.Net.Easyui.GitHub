@@ -4,6 +4,7 @@ using Coldairarrow.Util.RPC;
 using Coldairarrow.Util.Sockets;
 using Coldairarrow.Util.Wcf;
 using DotNetty.Buffers;
+using DotNetty.Codecs;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Groups;
@@ -138,9 +139,9 @@ namespace Coldairarrow.Console1
         static void DotNettyTest()
         {
             int port = 8007;
+            ClientWait clientWait = new ClientWait();
             RunServerAsync();
             RunClientAsync();
-
             void RunServerAsync()
             {
                 try
@@ -152,6 +153,8 @@ namespace Coldairarrow.Console1
                         .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
                         {
                             IChannelPipeline pipeline = channel.Pipeline;
+                            pipeline.AddLast("framing-enc", new LengthFieldPrepender(2));
+                            pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(ushort.MaxValue, 0, 2, 0, 2));
 
                             pipeline.AddLast(new EchoServerHandler("小明"));
                         }));
@@ -168,6 +171,7 @@ namespace Coldairarrow.Console1
             {
                 try
                 {
+                    Stopwatch watch = new Stopwatch();
                     var bootstrap = new Bootstrap()
                         .Group(new MultithreadEventLoopGroup())
                         .Channel<TcpSocketChannel>()
@@ -175,22 +179,38 @@ namespace Coldairarrow.Console1
                         .Handler(new ActionChannelInitializer<ISocketChannel>(channel =>
                         {
                             IChannelPipeline pipeline = channel.Pipeline;
-                            pipeline.AddLast(new EchoClientHandler());
+                            pipeline.AddLast("framing-enc", new LengthFieldPrepender(2));
+                            pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(ushort.MaxValue, 0, 2, 0, 2));
+
+                            pipeline.AddLast(new EchoClientHandler(clientWait));
                         }));
+                    
+                    watch.Start();
+                    watch.Stop();
+                    Console.WriteLine($"初始化耗时:{watch.ElapsedMilliseconds}ms");
+
                     while (true)
                     {
                         try
                         {
-                            EchoClientHandler.watch.Restart();
-                            IChannel clientChannel = bootstrap.ConnectAsync($"127.0.0.1:{port}".ToIPEndPoint()).Result;
-                            IByteBuffer msg = Unpooled.WrappedBuffer(Encoding.UTF8.GetBytes($"Hello World AAAA"));
+                            watch = new Stopwatch();
+                            watch.Restart();
+                            var clientChannel = bootstrap.ConnectAsync($"127.0.0.1:{port}".ToIPEndPoint()).Result;
+                            clientWait.Start(clientChannel.Id.AsShortText());
+                            Task.Run(() =>
+                            {
+                                clientWait.Wait(clientChannel.Id.AsShortText());
+                                watch.Stop();
+                                Console.WriteLine($"耗时:{(double)watch.ElapsedTicks / 10000}ms");
+                            });
+                            IByteBuffer msg = Unpooled.WrappedBuffer(Encoding.UTF8.GetBytes($"Hello World"));
                             clientChannel.WriteAndFlushAsync(msg);
                         }
                         catch (Exception ex)
                         {
                             Console.WriteLine(ex);
                         }
-                        Thread.Sleep(1000);
+                        //Thread.Sleep(1);
                     }
                 }
                 catch (Exception ex)
@@ -208,7 +228,7 @@ namespace Coldairarrow.Console1
         {
             //WcfTest();
             //SocketTest();
-            //DotNettyTest();
+            DotNettyTest();
 
             Console.WriteLine("完成");
             Console.ReadLine();

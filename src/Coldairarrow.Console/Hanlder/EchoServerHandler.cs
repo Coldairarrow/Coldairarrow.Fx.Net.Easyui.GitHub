@@ -37,7 +37,10 @@ namespace Echo.Server
         }
         public override void ChannelRead(IChannelHandlerContext context, object message)
         {
+            var msg = message as IByteBuffer;
+            //Console.WriteLine($"服务端收到:{msg.ToString(Encoding.UTF8)}");
             context.WriteAndFlushAsync(message);
+            context.Channel.CloseAsync();
             //context.DisconnectAsync();
             //context.WriteAsync(message);
         }
