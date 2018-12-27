@@ -25,10 +25,10 @@ namespace Echo.Client
             //watch.Stop();
             _clientWait.Set(context.Channel.Id.AsShortText());
             //Console.WriteLine($"请求耗时:{(double)watch.ElapsedTicks / 10000}ms");
-            //string GetTime()
-            //{
-            //    return $"{(double)DateTime.Now.Ticks / 10000}ms";
-            //}
+            string GetTime()
+            {
+                return $"{(double)DateTime.Now.Ticks / 10000}ms";
+            }
         }
         public override void ChannelReadComplete(IChannelHandlerContext context) => context.Flush();
 

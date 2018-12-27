@@ -40,7 +40,7 @@ namespace Echo.Server
             var msg = message as IByteBuffer;
             //Console.WriteLine($"服务端收到:{msg.ToString(Encoding.UTF8)}");
             context.WriteAndFlushAsync(message);
-            context.Channel.CloseAsync();
+            context.Channel.DisconnectAsync();
             //context.DisconnectAsync();
             //context.WriteAsync(message);
         }

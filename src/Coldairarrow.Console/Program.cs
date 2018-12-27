@@ -1,6 +1,5 @@
 ﻿using Coldairarrow.Entity.Base_SysManage;
 using Coldairarrow.Util;
-using Coldairarrow.Util.RPC;
 using Coldairarrow.Util.Sockets;
 using Coldairarrow.Util.Wcf;
 using DotNetty.Buffers;
@@ -19,6 +18,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Coldairarrow.DotNettyRPC;
 
 namespace Coldairarrow.Console1
 {
@@ -44,10 +44,6 @@ namespace Coldairarrow.Console1
             int count = 1;
             int errorCount = 0;
             RPCServer rPCServer = new RPCServer(port);
-            rPCServer.HandleException = ex =>
-            {
-                Console.WriteLine(ExceptionHelper.GetExceptionAllMsg(ex));
-            };
             rPCServer.RegisterService<IHello, Hello>();
             rPCServer.Start();
             IHello client = null;
@@ -80,29 +76,36 @@ namespace Coldairarrow.Console1
             Console.WriteLine($"每次耗时:{(double)watch.ElapsedMilliseconds / count}ms");
             Console.WriteLine($"错误次数：{errorCount}");
         }
+
         static void WcfTest()
         {
-            int count = int.MaxValue;
+            int threadCount = 4;
+            int port = 9999;
+            int count = 10000;
+            int errorCount = 0;
 
             WcfHost<IHello, Hello> wcfHost = new WcfHost<IHello, Hello>();
             wcfHost.StartHost();
             IHello client = WcfClient.GetService<IHello>("http://127.0.0.1:14725");
             client.SayHello("Hello");
             Stopwatch watch = new Stopwatch();
+            List<Task> tasks = new List<Task>();
+
             watch.Start();
-            LoopHelper.Loop(1, () =>
+            LoopHelper.Loop(threadCount, () =>
             {
-                Task.Run(() =>
+                tasks.Add(Task.Run(() =>
                 {
                     LoopHelper.Loop(count, index =>
                     {
                         var msg = client.SayHello("Hello" + index);
-                        Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss:ffffff")}:{msg}");
+                        //Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss:ffffff")}:{msg}");
                     });
-                }).Wait();
+                }));
             });
+            Task.WaitAll(tasks.ToArray());
             watch.Stop();
-            Console.WriteLine($"每次耗时:{(double)watch.ElapsedMilliseconds / count}ms");
+            Console.WriteLine($"并发数:{threadCount},运行:{count}次,每次耗时:{(double)watch.ElapsedMilliseconds / count}ms");
         }
 
         static void SocketTest()
@@ -224,12 +227,54 @@ namespace Coldairarrow.Console1
                 return $"{(double)DateTime.Now.Ticks/10000}ms";
             }
         }
+
+        static void DotNettyRPCTest()
+        {
+            int threadCount = 1;
+            int port = 9999;
+            int count = 10000;
+            int errorCount = 0;
+            RPCServer rPCServer = new RPCServer(port);
+            rPCServer.RegisterService<IHello, Hello>();
+            rPCServer.Start();
+            IHello client = null;
+            client = RPCClientFactory.GetClient<IHello>("127.0.0.1", port);
+            client.SayHello("aaa");
+            Stopwatch watch = new Stopwatch();
+            List<Task> tasks = new List<Task>();
+            watch.Start();
+            LoopHelper.Loop(threadCount, () =>
+            {
+                tasks.Add(Task.Run(() =>
+                {
+                    LoopHelper.Loop(count, () =>
+                    {
+                        string msg = string.Empty;
+                        try
+                        {
+                            msg = client.SayHello("Hello");
+                            //Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff")}:{msg}");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ExceptionHelper.GetExceptionAllMsg(ex));
+                        }
+                    });
+                }));
+            });
+            Task.WaitAll(tasks.ToArray());
+            watch.Stop();
+            Console.WriteLine($"并发数:{threadCount},运行:{count}次,每次耗时:{(double)watch.ElapsedMilliseconds / count}ms");
+            Console.WriteLine($"错误次数：{errorCount}");
+        }
+
         static void Main(string[] args)
         {
             //WcfTest();
             //SocketTest();
-            DotNettyTest();
-
+            //DotNettyTest();
+            //RpcTest();
+            DotNettyRPCTest();
             Console.WriteLine("完成");
             Console.ReadLine();
         }
