@@ -178,16 +178,6 @@
     <Compile Include="Cache\ICache.cs" />
     <Compile Include="Cache\RedisCache.cs" />
     <Compile Include="Cache\SystemCache.cs" />
-    <Compile Include="ClassLibrary\DotNettyRPC\ClientObj.cs" />
-    <Compile Include="ClassLibrary\DotNettyRPC\ClientWait.cs" />
-    <Compile Include="ClassLibrary\DotNettyRPC\Handler\ClientHandler.cs" />
-    <Compile Include="ClassLibrary\DotNettyRPC\Handler\ServerHandler.cs" />
-    <Compile Include="ClassLibrary\DotNettyRPC\RequestModel.cs" />
-    <Compile Include="ClassLibrary\DotNettyRPC\ResponseModel.cs" />
-    <Compile Include="ClassLibrary\DotNettyRPC\RPCClientFactory.cs" />
-    <Compile Include="ClassLibrary\DotNettyRPC\RPCClientProxy.cs" />
-    <Compile Include="ClassLibrary\DotNettyRPC\RPCServer.cs" />
-    <Compile Include="ClassLibrary\DotNettyRPC\ServerObj.cs" />
     <Compile Include="ClassLibrary\LinqKit\ExpandableQuery.cs" />
     <Compile Include="ClassLibrary\LinqKit\ExpressionExpander.cs" />
     <Compile Include="ClassLibrary\LinqKit\ExpressionVisitor.cs" />
