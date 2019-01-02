@@ -36,6 +36,17 @@ namespace Coldairarrow.Console1
         }
     }
 
+    public interface IOrderService
+    {
+        decimal CalculateFinalOrderSum(long userId, double originalSum);
+    }
+    public class OrderService : IOrderService
+    {
+        public decimal CalculateFinalOrderSum(long userId, double originalSum)
+        {
+            return 66666666666;
+        }
+    }
     class Program
     {
         static void RpcTest()
@@ -230,42 +241,13 @@ namespace Coldairarrow.Console1
 
         static void DotNettyRPCTest()
         {
-            int threadCount = 1;
-            int port = 9999;
-            int count = 10000;
-            int errorCount = 0;
-            RPCServer rPCServer = new RPCServer(port);
-            rPCServer.RegisterService<IHello, Hello>();
-            rPCServer.Start();
-            IHello client = null;
-            client = RPCClientFactory.GetClient<IHello>("127.0.0.1", port);
-            client.SayHello("aaa");
-            Stopwatch watch = new Stopwatch();
-            List<Task> tasks = new List<Task>();
-            watch.Start();
-            LoopHelper.Loop(threadCount, () =>
-            {
-                tasks.Add(Task.Run(() =>
-                {
-                    LoopHelper.Loop(count, () =>
-                    {
-                        string msg = string.Empty;
-                        try
-                        {
-                            msg = client.SayHello("Hello");
-                            //Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff")}:{msg}");
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ExceptionHelper.GetExceptionAllMsg(ex));
-                        }
-                    });
-                }));
-            });
-            Task.WaitAll(tasks.ToArray());
-            watch.Stop();
-            Console.WriteLine($"并发数:{threadCount},运行:{count}次,每次耗时:{(double)watch.ElapsedMilliseconds / count}ms");
-            Console.WriteLine($"错误次数：{errorCount}");
+            RPCServer rpcServer = new RPCServer(9999);
+            rpcServer.RegisterService<IOrderService, OrderService>();
+            rpcServer.Start();
+            IOrderService client = RPCClientFactory.GetClient<IOrderService>("127.0.0.1", 9999);
+            var res = client.CalculateFinalOrderSum(9, 3);
+
+            Console.ReadLine();
         }
 
         static void Main(string[] args)
