@@ -2,6 +2,7 @@
 using Coldairarrow.Entity.Base_SysManage;
 using Coldairarrow.Util;
 using System;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -38,7 +39,7 @@ namespace Coldairarrow.Web
         /// <returns></returns>
         public ContentResult JsonContent(string jsonStr)
         {
-            return Content(jsonStr, "application/json");
+            return Content(jsonStr, "application/json", Encoding.UTF8);
         }
 
         /// <summary>
