@@ -1,5 +1,7 @@
 ﻿using Coldairarrow.Business.Common;
 using Coldairarrow.Util;
+using System;
+using System.Text;
 using System.Web.Mvc;
 
 namespace Coldairarrow.Web
@@ -15,16 +17,31 @@ namespace Coldairarrow.Web
         /// <param name="filterContext">过滤器上下文</param>
         public void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            //若为本地测试，则不需要登录
-            if (GlobalSwitch.RunModel == RunModel.LocalTest)
+            try
             {
-                return;
-            }
-            //判断是否需要登录
-            bool needLogin = filterContext.ContainsAttribute<CheckLoginAttribute>() && !filterContext.ContainsAttribute<IgnoreLoginAttribute>();
+                //若为本地测试，则不需要登录
+                if (GlobalSwitch.RunModel == RunModel.LocalTest)
+                {
+                    return;
+                }
+                //判断是否需要登录
+                bool needLogin = filterContext.ContainsAttribute<CheckLoginAttribute>() && !filterContext.ContainsAttribute<IgnoreLoginAttribute>();
 
-            //转到登录
-            if (needLogin && !Operator.Logged())
+                //转到登录
+                if (needLogin && !Operator.Logged())
+                {
+                    RedirectToLogin();
+                }
+                else
+                    return;
+            }
+            catch (Exception ex)
+            {
+                BusHelper.HandleException(ex);
+                RedirectToLogin();
+            }
+
+            void RedirectToLogin()
             {
                 UrlHelper urlHelper = new UrlHelper(filterContext.RequestContext);
                 string loginUrl = urlHelper.Content("~/Home/Login");
@@ -35,10 +52,8 @@ namespace Coldairarrow.Web
     </script>
 </html>
 ";
-                filterContext.Result = new ContentResult { Content = script };
+                filterContext.Result = new ContentResult { Content = script, ContentType = "text/html", ContentEncoding = Encoding.UTF8 };
             }
-            else
-                return;
         }
 
         /// <summary>
