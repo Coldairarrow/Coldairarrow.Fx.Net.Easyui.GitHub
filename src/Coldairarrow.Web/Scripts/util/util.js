@@ -249,78 +249,90 @@
     });
  */
 (function ($) {
-    if (typeof ($) == "undefined")
-        throw '缺少jQuery';
-    if ($.prototype.bindImgBase64)
-        return;
+    try {
+        if (typeof ($) == "undefined")
+            throw '缺少jQuery';
+        if ($.prototype.bindImgBase64)
+            return;
 
-    $.prototype.bindImgBase64 = function (callback) {
-        var _callback = callback || function () { };
-        var thisElement = this[0];
-        thisElement.onchange = function () {
-            var img = event.target.files[0];
+        $.prototype.bindImgBase64 = function (callback) {
+            var _callback = callback || function () { };
+            var thisElement = this[0];
+            thisElement.onchange = function () {
+                var img = event.target.files[0];
 
-            // 判断是否图片
-            if (!img) {
-                return;
-            }
-            // 判断图片格式
-            if (!(img.type.indexOf('image') == 0 && img.type && /\.(?:jpg|jpeg|png|gif|bmp)$/i.test(img.name))) {
-                throw '图片只能是jpg,jpeg,gif,png,bmp';
-            }
-            var reader = new FileReader();
-            reader.readAsDataURL(img);
-            reader.onload = function (e) {
-                var imgBase64 = e.target.result;
-                $(thisElement).attr('base64', imgBase64);
-                _callback(imgBase64);
-            }
+                // 判断是否图片
+                if (!img) {
+                    return;
+                }
+                // 判断图片格式
+                if (!(img.type.indexOf('image') == 0 && img.type && /\.(?:jpg|jpeg|png|gif|bmp)$/i.test(img.name))) {
+                    throw '图片只能是jpg,jpeg,gif,png,bmp';
+                }
+                var reader = new FileReader();
+                reader.readAsDataURL(img);
+                reader.onload = function (e) {
+                    var imgBase64 = e.target.result;
+                    $(thisElement).attr('base64', imgBase64);
+                    _callback(imgBase64);
+                }
+            };
         };
-    };
-    $.prototype.getImgBase64 = function () {
-        return this.attr('base64');
-    };
+        $.prototype.getImgBase64 = function () {
+            return this.attr('base64');
+        };
+    } catch (e) {
+        console.log(e);
+    }
 })($);
 
 //拓展FileReader的readAsBinaryString方法
 (function () {
-    if (FileReader.prototype.readAsBinaryString)
-        return;
+    try {
+        if (FileReader.prototype.readAsBinaryString)
+            return;
 
-    FileReader.prototype.readAsBinaryString = function (fileData) {
-        var binary = "";
-        var pt = this;
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            var bytes = new Uint8Array(reader.result);
-            var length = bytes.byteLength;
-            for (var i = 0; i < length; i++)
-                binary += String.fromCharCode(bytes[i]);
+        FileReader.prototype.readAsBinaryString = function (fileData) {
+            var binary = "";
+            var pt = this;
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var bytes = new Uint8Array(reader.result);
+                var length = bytes.byteLength;
+                for (var i = 0; i < length; i++)
+                    binary += String.fromCharCode(bytes[i]);
+            }
+            pt.content = binary;
+            $(pt).trigger('onload');
         }
-        pt.content = binary;
-        $(pt).trigger('onload');
+        reader.readAsArrayBuffer(fileData);
+    } catch (e) {
+        console.log(e);
     }
-    reader.readAsArrayBuffer(fileData);
 })();
 
 //拓展文件操作，将文件转为base64
 //回调参数为文件base64内容和文件名
 (function () {
-    if (typeof (jQuery) == 'undefined')
-        throw '缺少jQuery插件';
+    try {
+        if (typeof (jQuery) == 'undefined')
+            throw '缺少jQuery插件';
 
-    $.prototype.getFileBase64 = function (callBack) {
-        var _callBack = callBack || function () { };
-        var file = $(this)[0].files[0];
-        var reader = new FileReader();
-        reader.readAsBinaryString(file);
-        reader.onload = function (e) {
-            var bytes = e.target.result;
-            var base64 = btoa(bytes);
-            var fileName = file.name;
-            callBack(base64, fileName);
-        }
-    };
+        $.prototype.getFileBase64 = function (callBack) {
+            var _callBack = callBack || function () { };
+            var file = $(this)[0].files[0];
+            var reader = new FileReader();
+            reader.readAsBinaryString(file);
+            reader.onload = function (e) {
+                var bytes = e.target.result;
+                var base64 = btoa(bytes);
+                var fileName = file.name;
+                callBack(base64, fileName);
+            }
+        };
+    } catch (e) {
+        console.log(e);
+    }
 })();
 
 //获取元素中所有没有被disabled的name集合

@@ -752,6 +752,7 @@
     <Content Include="Views\Shared\_Layout_List_js.cshtml" />
     <Content Include="Views\Demo\UploadFileIndex.cshtml" />
     <Content Include="Views\Demo\UploadFileForm.cshtml" />
+    <Content Include="Views\Demo\UploadImgView.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

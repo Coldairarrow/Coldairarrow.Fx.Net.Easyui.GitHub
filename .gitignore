@@ -260,3 +260,5 @@ paket-files/
 __pycache__/
 *.pyc
 /src/Coldairarrow.Web/Upload/Img/2018-10-25
+/src/Coldairarrow.Web/Upload/FIle
+/src/Coldairarrow.Web/Upload/Img
