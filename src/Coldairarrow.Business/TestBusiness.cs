@@ -3,7 +3,6 @@ using DotNetty.Codecs;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
-using DotNetty.Transport.Libuv;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +28,7 @@ namespace Coldairarrow.Business
                     //pipeline.AddLast(new EchoClientHandler(clientWait));
                 }));
 
-            var clientChannel = bootstrap.ConnectAsync($"61.174.68.148:3004".ToIPEndPoint()).Result;
+            var clientChannel = bootstrap.ConnectAsync($"127.0.0.1:8888".ToIPEndPoint()).Result;
 
             string str = string.Empty;
         }
