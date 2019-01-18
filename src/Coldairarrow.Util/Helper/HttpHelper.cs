@@ -212,9 +212,7 @@ namespace Coldairarrow.Util
             //若为POST的application/json
             if (contentType.Contains("application/json"))
             {
-                var stream = request.InputStream;
-                stream.Position = 0;
-                string str = new StreamReader(stream).ReadToEnd();
+                string str = request.InputStream.ReadToString(Encoding.UTF8);
                 var obj = str.ToJObject();
                 foreach (var aProperty in obj)
                 {

@@ -41,12 +41,10 @@ namespace Coldairarrow.Util
         public static string ReadToString(this Stream stream, Encoding encoding)
         {
             string resStr = string.Empty;
-            stream.Seek(0, SeekOrigin.Begin);
-            using (var streamReader = new StreamReader(stream, encoding))
-            {
-                resStr = streamReader.ReadToEnd();
-            };
-            stream.Seek(0, SeekOrigin.Begin);
+            stream.Position = 0;
+            var streamReader = new StreamReader(stream, encoding);
+            resStr = streamReader.ReadToEnd();
+            stream.Position = 0;
 
             return resStr;
         }
