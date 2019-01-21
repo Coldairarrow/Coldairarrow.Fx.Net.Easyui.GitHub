@@ -726,6 +726,12 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripts\vendor\umeditor\net\getContent.ashx.cs">
+      <DependentUpon>getContent.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Scripts\vendor\umeditor\net\imageUp.ashx.cs">
+      <DependentUpon>imageUp.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Scripts\vendor\umeditor\net\Uploader.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -768,8 +774,6 @@
     <Content Include="Views\Test\MapDatTest.cshtml" />
     <Content Include="Views\Test\GetNingboGeojsonForm.cshtml" />
     <Content Include="Views\Demo\UMEditor.cshtml" />
-    <Content Include="Scripts\vendor\umeditor\net\getContent.ashx" />
-    <Content Include="Scripts\vendor\umeditor\net\imageUp.ashx" />
     <Content Include="Scripts\vendor\umeditor\third-party\mathquill\font\stixgeneral-bundle\stixgeneral-webfont.eot" />
     <Content Include="Scripts\vendor\umeditor\third-party\mathquill\font\stixgeneral-bundle\stixgeneral-webfont.ttf" />
     <Content Include="Scripts\vendor\umeditor\third-party\mathquill\font\stixgeneral-bundle\stixgeneral-webfont.woff" />
@@ -790,6 +794,8 @@
     <Content Include="Views\Demo\UploadFileIndex.cshtml" />
     <Content Include="Views\Demo\UploadFileForm.cshtml" />
     <Content Include="Views\Demo\UploadImgView.cshtml" />
+    <Content Include="Scripts\vendor\umeditor\net\getContent.ashx" />
+    <Content Include="Scripts\vendor\umeditor\net\imageUp.ashx" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
