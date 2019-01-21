@@ -619,10 +619,6 @@
     <Content Include="Scripts\vendor\umeditor\lang\zh-cn\images\music.png" />
     <Content Include="Scripts\vendor\umeditor\lang\zh-cn\images\upload.png" />
     <Content Include="Scripts\vendor\umeditor\lang\zh-cn\zh-cn.js" />
-    <Content Include="Scripts\vendor\umeditor\net\upload\2018-09-06\0a89500b-2307-4174-9d0f-3882c8423963.png" />
-    <Content Include="Scripts\vendor\umeditor\net\upload\2018-09-06\570841a3-e808-403a-9aee-ece34e9adc7a.jpeg" />
-    <Content Include="Scripts\vendor\umeditor\net\upload\2018-09-06\6686b9d8-1e14-4a59-8aa0-21c3806240b5.jpeg" />
-    <Content Include="Scripts\vendor\umeditor\net\upload\2018-09-06\c2973aab-66a8-41fe-b374-9a2f5dd85b1a.jpg" />
     <Content Include="Scripts\vendor\umeditor\themes\default\css\umeditor.css" />
     <Content Include="Scripts\vendor\umeditor\themes\default\css\umeditor.min.css" />
     <Content Include="Scripts\vendor\umeditor\themes\default\images\caret.png" />
