@@ -40,7 +40,7 @@
             $.extend(theEntity, formValues);
             $.postJSON(rootUrl + 'Base_SysManage/Base_SysRole/SaveData', theEntity, function (resJson) {
                 if (resJson.Success) {
-                    parent.$('#dataTable').datagrid('reload');
+                    parent.$('#dataTable').datagrid('clearChecked').datagrid('reload');
                     parent.dialogMsg('保存成功!');
                     parent.dialogClose('form');
                 }

@@ -53,7 +53,7 @@
             $.extend(theEntity, formValues);
             $.postJSON(rootUrl + 'Base_SysManage/Base_AppSecret/SaveData', theEntity, function (resJson) {
                 if (resJson.Success) {
-                    parent.$('#dataTable').datagrid('reload');
+                    parent.$('#dataTable').datagrid('clearChecked').datagrid('reload');
                     parent.dialogMsg('±£´æ³É¹¦!');
                     parent.dialogClose('form');
                 }
