@@ -23,12 +23,12 @@ namespace Coldairarrow.Web
             return View();
         }
 
+        [CheckParamNotEmpty("aa")]
         public ActionResult Test()
         {
-            IHello client = RPCClientFactory.GetClient<IHello>("127.0.0.1", 9999);
-            var res = client.SayHello("aa");
 
-            return Content(res);
+
+            return Success();
         }
     }
 }

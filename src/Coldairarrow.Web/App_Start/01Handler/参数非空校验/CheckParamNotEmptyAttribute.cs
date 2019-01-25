@@ -39,7 +39,7 @@ namespace Coldairarrow.Web
                     Success = false,
                     Msg = $"参数:{string.Join(",", needParamters)}不能为空！"
                 };
-                filterContext.Result = new ContentResult { Content = res.ToJson(), ContentEncoding = Encoding.UTF8 };
+                filterContext.Result = new ContentResult { Content = res.ToJson(), ContentEncoding = Encoding.UTF8,ContentType= "application/json;charset=utf-8" };
             }
         }
 
