@@ -257,9 +257,10 @@ namespace Coldairarrow.Console1
             //DotNettyTest();
             //RpcTest();
             //DotNettyRPCTest();
-            RPCServer rpcServer = new RPCServer(9999);
-            rpcServer.RegisterService<IHello, Hello>();
-            rpcServer.Start();
+            //RPCServer rpcServer = new RPCServer(9999);
+            //rpcServer.RegisterService<IHello, Hello>();
+            //rpcServer.Start();
+            Console.WriteLine(DateTime.Now.Ticks);
 
             Console.WriteLine("完成");
             Console.ReadLine();

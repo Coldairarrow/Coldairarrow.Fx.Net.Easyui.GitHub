@@ -304,8 +304,8 @@
             }
             pt.content = binary;
             $(pt).trigger('onload');
+            reader.readAsArrayBuffer(fileData);
         }
-        reader.readAsArrayBuffer(fileData);
     } catch (e) {
         console.log(e);
     }
