@@ -695,7 +695,7 @@
     <Content Include="Skin\scss\ue_templates.scss" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\01Handler\参数非空校验\CheckLoginAttribute.cs" />
+    <Compile Include="App_Start\01Handler\参数非空校验\CheckParamNotEmptyAttribute.cs" />
     <Compile Include="App_Start\01Handler\对外接口签名校验\CheckSignAttribute.cs" />
     <Compile Include="App_Start\01Handler\对外接口签名校验\CheckAppIdPermissionAttribute.cs" />
     <Compile Include="App_Start\01Handler\对外接口签名校验\IgnoreAppIdPermissionAttribute.cs" />
