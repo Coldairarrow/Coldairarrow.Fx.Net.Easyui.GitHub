@@ -114,9 +114,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientWait.cs" />
-    <Compile Include="Hanlder\EchoClientHandler.cs" />
-    <Compile Include="Hanlder\EchoServerHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
