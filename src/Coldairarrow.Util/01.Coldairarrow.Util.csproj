@@ -184,11 +184,6 @@
     <Compile Include="ClassLibrary\LinqKit\Extensions.cs" />
     <Compile Include="ClassLibrary\LinqKit\Linq.cs" />
     <Compile Include="ClassLibrary\ParentChildrenMapping.cs" />
-    <Compile Include="ClassLibrary\RPC\RequestModel.cs" />
-    <Compile Include="ClassLibrary\RPC\ResponseModel.cs" />
-    <Compile Include="ClassLibrary\RPC\RPCClientFactory.cs" />
-    <Compile Include="ClassLibrary\RPC\RPCClientProxy.cs" />
-    <Compile Include="ClassLibrary\RPC\RPCServer.cs" />
     <Compile Include="ClassLibrary\SerialConnecter\SerialConnecter.cs" />
     <Compile Include="ClassLibrary\Sockets\SendCheckMsg.cs" />
     <Compile Include="ClassLibrary\Sockets\TcpSocketClient.cs" />
