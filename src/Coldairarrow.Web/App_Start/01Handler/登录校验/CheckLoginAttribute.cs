@@ -17,6 +17,7 @@ namespace Coldairarrow.Web
         /// <param name="filterContext">过滤器上下文</param>
         public void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            var request = filterContext.RequestContext.HttpContext.Request;
             try
             {
                 //若为本地测试，则不需要登录
@@ -43,16 +44,28 @@ namespace Coldairarrow.Web
 
             void RedirectToLogin()
             {
-                UrlHelper urlHelper = new UrlHelper(filterContext.RequestContext);
-                string loginUrl = urlHelper.Content("~/Home/Login");
-                string script = $@"    
+                if (request.IsAjaxRequest())
+                {
+                    filterContext.Result = new ContentResult
+                    {
+                        Content = new AjaxResult { Success = false, ErrorCode = 1, Msg = "未登录" }.ToJson(),
+                        ContentEncoding = Encoding.UTF8,
+                        ContentType = "application/json"
+                    };
+                }
+                else
+                {
+                    UrlHelper urlHelper = new UrlHelper(filterContext.RequestContext);
+                    string loginUrl = urlHelper.Content("~/Home/Login");
+                    string script = $@"    
 <html>
     <script>
         top.location.href = '{loginUrl}';
     </script>
 </html>
 ";
-                filterContext.Result = new ContentResult { Content = script, ContentType = "text/html", ContentEncoding = Encoding.UTF8 };
+                    filterContext.Result = new ContentResult { Content = script, ContentType = "text/html", ContentEncoding = Encoding.UTF8 };
+                }
             }
         }
 
