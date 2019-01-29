@@ -2,7 +2,7 @@
 (function ($) {
     $.ajaxSetup({
         cache: false, //关闭AJAX缓存
-        dataFilter: function (res, dataType) {
+        dataFilter: function (res, dataType) {//登录失败过滤
             try {
                 var resJson = JSON.parse(res);
                 if (resJson.ErrorCode == 1)
