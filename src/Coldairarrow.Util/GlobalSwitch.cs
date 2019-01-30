@@ -1,4 +1,6 @@
-﻿namespace Coldairarrow.Util
+﻿using System;
+
+namespace Coldairarrow.Util
 {
     /// <summary>
     /// 全局控制
@@ -74,6 +76,20 @@
         /// 是否开启Redis缓存
         /// </summary>
         public static bool OpenRedisCache { get; } = false;
+
+        #endregion
+
+        #region 日志相关
+
+        /// <summary>
+        /// 日志记录方式
+        /// </summary>
+        public static LoggerType LoggerType { get; set; } = LoggerType.RDBMS;
+
+        /// <summary>
+        /// ElasticSearch服务器配置
+        /// </summary>
+        public static Uri[] ElasticSearchNodes { get; set; } = new Uri[] { new Uri("http://localhost:9200/") };
 
         #endregion
     }

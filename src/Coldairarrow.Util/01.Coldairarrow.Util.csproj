@@ -218,6 +218,7 @@
     <Compile Include="Helper\TypeBuilderHelper.cs" />
     <Compile Include="Model\EasyuiTreeDto.cs" />
     <Compile Include="Model\ErrorResult.cs" />
+    <Compile Include="Model\LoggerType.cs" />
     <Compile Include="Model\SuccessResult.cs" />
     <Compile Include="WebApp\SessionHelper.cs" />
     <Compile Include="ClassLibrary\WindowsService\WindowsService.cs">
