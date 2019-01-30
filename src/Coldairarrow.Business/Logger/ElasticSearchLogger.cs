@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Coldairarrow.Entity.Base_SysManage;
+﻿using Coldairarrow.Entity.Base_SysManage;
 using Coldairarrow.Util;
 using Elasticsearch.Net;
 using Nest;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Coldairarrow.Business
 {
@@ -19,36 +17,51 @@ namespace Coldairarrow.Business
             var pool = new StaticConnectionPool(GlobalSwitch.ElasticSearchNodes);
             _connectionSettings = new ConnectionSettings(pool).DefaultIndex(index);
 
-            var client = new ElasticClient(_connectionSettings);
-            if (!client.IndexExists(Indices.Parse(index)).Exists)
+            _elasticClient = new ElasticClient(_connectionSettings);
+            if (!_elasticClient.IndexExists(Indices.Parse(index)).Exists)
             {
                 var descriptor = new CreateIndexDescriptor(index)
                     .Mappings(ms => ms
                         .Map<Base_SysLog>(m => m.AutoMap())
                     );
-                var res = client.CreateIndex(descriptor);
+                var res = _elasticClient.CreateIndex(descriptor);
             }
         }
         private static ConnectionSettings _connectionSettings { get; set; }
+        private static ElasticClient _elasticClient { get; set; }
         public List<Base_SysLog> GetLogList(string logContent, string logType, string opUserName, DateTime? startTime, DateTime? endTime, Pagination pagination)
         {
-            //var client = GetElasticClient();
-            //Func<QueryContainerDescriptor<Base_SysLog>, QueryContainer> q=
-            //var list = client.Search<Base_SysLog>(x =>
-            //    x.Query(y =>
-            //        y.Wildcard(z =>
-            //            z.Field(o => o.LogContent).Value("*同步*")
-            //        )
-            //        && y.DateRange(dr => dr.Field(f => f.OpTime).LessThan(DateTime.Now))
-            //        && y.Terms(t => t.Field(f => f.LogType).Terms("开发测试日志"))
-            //    )
-            //    .Size(30)
-            //    .Sort(s => s.Descending(d => d.OpTime))
-            //).Documents;
+            var client = GetElasticClient();
+            var filters = new List<Func<QueryContainerDescriptor<Base_SysLog>, QueryContainer>>();
+            if (!logContent.IsNullOrEmpty())
+                filters.Add(q => q.Wildcard(w => w.Field(f => f.LogContent).Value($"*{logContent}*")));
+            if (!logType.IsNullOrEmpty())
+                filters.Add(q => q.Terms(t => t.Field(f => f.LogType).Terms(logType)));
+            if (!opUserName.IsNullOrEmpty())
+                filters.Add(q => q.Wildcard(w => w.Field(f => f.OpUserName).Value($"*{opUserName}*")));
+            if (!startTime.IsNullOrEmpty())
+                filters.Add(q => q.DateRange(d => d.Field(f => f.OpTime).GreaterThan(startTime)));
+            if (!endTime.IsNullOrEmpty())
+                filters.Add(q => q.DateRange(d => d.Field(f => f.OpTime).LessThan(endTime)));
 
-            return null;
+            Func<SortDescriptor<Base_SysLog>, IPromise<IList<ISort>>> sort = null;
+            if (pagination.SortType.ToLower() == "asc")
+                sort = o => o.Ascending(pagination.SortField);
+            else
+                sort = o => o.Descending(pagination.SortField);
+
+            var result = client.Search<Base_SysLog>(s =>
+                s.Query(q =>
+                    q.Bool(b => b.Filter(filters.ToArray()))
+                )
+                .Sort(sort)
+                .Skip((pagination.page - 1) * pagination.rows)
+                .Take(pagination.rows)
+            );
+            pagination.RecordCount = result.Hits.Count;
+
+            return result.Documents.ToList();
         }
-
         public void WriteSysLog(Base_SysLog log)
         {
             GetElasticClient().IndexDocument(log);
@@ -56,7 +69,7 @@ namespace Coldairarrow.Business
 
         private ElasticClient GetElasticClient()
         {
-            return new ElasticClient(_connectionSettings);
+            return _elasticClient;
         }
     }
 }

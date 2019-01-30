@@ -118,6 +118,7 @@
     <Compile Include="Common\Operator.cs" />
     <Compile Include="Logger\ElasticSearchLogger.cs" />
     <Compile Include="Logger\ILogger.cs" />
+    <Compile Include="Logger\LoggerFactory.cs" />
     <Compile Include="Logger\RDBMSLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
