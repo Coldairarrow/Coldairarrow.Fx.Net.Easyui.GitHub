@@ -44,17 +44,12 @@ namespace Coldairarrow.Business
             if (!endTime.IsNullOrEmpty())
                 filters.Add(q => q.DateRange(d => d.Field(f => f.OpTime).LessThan(endTime)));
 
-            Func<SortDescriptor<Base_SysLog>, IPromise<IList<ISort>>> sort = null;
-            if (pagination.SortType.ToLower() == "asc")
-                sort = o => o.Ascending(pagination.SortField);
-            else
-                sort = o => o.Descending(pagination.SortField);
-
+            SortOrder sortOrder = pagination.SortType.ToLower() == "asc" ? SortOrder.Ascending : SortOrder.Descending;
             var result = client.Search<Base_SysLog>(s =>
                 s.Query(q =>
                     q.Bool(b => b.Filter(filters.ToArray()))
                 )
-                .Sort(sort)
+                .Sort(o => o.Field(typeof(Base_SysLog).GetProperty(pagination.SortField), sortOrder))
                 .Skip((pagination.page - 1) * pagination.rows)
                 .Take(pagination.rows)
             );
