@@ -193,6 +193,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bpmnjs\bpmn\assets\bpmn-font\css\bpmn-embedded.css" />
+    <Content Include="bpmnjs\bpmn\assets\bpmn-font\css\bpmn.css" />
+    <Content Include="bpmnjs\bpmn\assets\bpmn-font\font\bpmn.svg" />
+    <Content Include="bpmnjs\bpmn\assets\diagram-js.css" />
+    <Content Include="bpmnjs\bpmn\bpjs.js" />
+    <Content Include="bpmnjs\bpmn\jquery.js" />
+    <Content Include="bpmnjs\index.html" />
+    <Content Include="bpmnjs\index.js" />
     <Content Include="Download\_.txt" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -758,6 +766,10 @@
     <Content Include="Areas\Base_SysManage\Views\City\Index.cshtml" />
     <Content Include="Config\NingboGeojson.json" />
     <Content Include="Areas\Base_SysManage\Views\Common\ShowBigImg.cshtml" />
+    <Content Include="bpmnjs\bpmn\assets\bpmn-font\font\bpmn.eot" />
+    <Content Include="bpmnjs\bpmn\assets\bpmn-font\font\bpmn.ttf" />
+    <Content Include="bpmnjs\bpmn\assets\bpmn-font\font\bpmn.woff" />
+    <Content Include="bpmnjs\pizza-collaboration.bpmn" />
     <None Include="packages.config" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
