@@ -193,6 +193,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bpmnjs-panel\dist\css\app.css" />
+    <Content Include="bpmnjs-panel\dist\css\diagram-js.css" />
+    <Content Include="bpmnjs-panel\dist\index.html" />
+    <Content Include="bpmnjs-panel\dist\index2.js" />
+    <Content Include="bpmnjs-panel\dist\index.js" />
+    <Content Include="bpmnjs-panel\dist\vendor\bpmn-font\css\bpmn-codes.css" />
+    <Content Include="bpmnjs-panel\dist\vendor\bpmn-font\css\bpmn-embedded.css" />
+    <Content Include="bpmnjs-panel\dist\vendor\bpmn-font\css\bpmn.css" />
+    <Content Include="bpmnjs-panel\dist\vendor\bpmn-font\font\bpmn.svg" />
+    <Content Include="bpmnjs-panel\dist\vendor\diagram-js.css" />
     <Content Include="bpmnjs\bpmn\assets\bpmn-font\css\bpmn-embedded.css" />
     <Content Include="bpmnjs\bpmn\assets\bpmn-font\css\bpmn.css" />
     <Content Include="bpmnjs\bpmn\assets\bpmn-font\font\bpmn.svg" />
@@ -770,6 +780,9 @@
     <Content Include="bpmnjs\bpmn\assets\bpmn-font\font\bpmn.ttf" />
     <Content Include="bpmnjs\bpmn\assets\bpmn-font\font\bpmn.woff" />
     <Content Include="bpmnjs\pizza-collaboration.bpmn" />
+    <Content Include="bpmnjs-panel\dist\vendor\bpmn-font\font\bpmn.eot" />
+    <Content Include="bpmnjs-panel\dist\vendor\bpmn-font\font\bpmn.ttf" />
+    <Content Include="bpmnjs-panel\dist\vendor\bpmn-font\font\bpmn.woff" />
     <None Include="packages.config" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
