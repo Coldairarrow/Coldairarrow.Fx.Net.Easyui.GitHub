@@ -32,17 +32,17 @@ namespace Coldairarrow.Web
             }
 
             //参数映射：支持application/json
-            var actionParameters = filterContext.ActionParameters;
-            var allParamters = HttpHelper.GetAllRequestParams(System.Web.HttpContext.Current);
-            filterContext.ActionDescriptor.GetParameters().ForEach(aParamter =>
-            {
-                string key = aParamter.ParameterName;
-                if (allParamters.ContainsKey(key))
-                {
-                    if (allParamters[key] != null)
-                        actionParameters[key] = allParamters[key]?.ToJson().ToObject(aParamter.ParameterType);
-                }
-            });
+            //var actionParameters = filterContext.ActionParameters;
+            //var allParamters = HttpHelper.GetAllRequestParams(System.Web.HttpContext.Current);
+            //filterContext.ActionDescriptor.GetParameters().ForEach(aParamter =>
+            //{
+            //    string key = aParamter.ParameterName;
+            //    if (allParamters.ContainsKey(key))
+            //    {
+            //        if (allParamters[key] != null)
+            //            actionParameters[key] = allParamters[key]?.ToJson().ToObject(aParamter.ParameterType);
+            //    }
+            //});
         }
 
         /// <summary>
