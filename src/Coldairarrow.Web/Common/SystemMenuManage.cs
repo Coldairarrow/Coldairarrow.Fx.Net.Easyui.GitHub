@@ -181,6 +181,8 @@ namespace Coldairarrow.Web
 
     public class Menu
     {
+        #region 属性
+
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }
         public string Icon { get; set; }
@@ -188,6 +190,14 @@ namespace Coldairarrow.Web
         public string Permission { get; set; }
         public bool IsShow { get; set; } = true;
         public List<Menu> SubMenus { get; set; }
+
+        #endregion
+
+        #region 前端映射
+
+
+
+        #endregion
     }
 
     #endregion
