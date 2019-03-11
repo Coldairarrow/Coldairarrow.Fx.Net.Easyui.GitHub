@@ -113,6 +113,12 @@ namespace Coldairarrow.Web
                     Url = GetUrl("~/Demo/UploadFileIndex")
                 };
                 newMenu1_1.SubMenus.Add(newMenu1_1_4);
+                Menu newMenu1_1_5 = new Menu
+                {
+                    Name = "图片上传Demo",
+                    Url = GetUrl("~/Demo/UploadImgView")
+                };
+                newMenu1_1.SubMenus.Add(newMenu1_1_5);
             }
 
             _allMenu = menus;
